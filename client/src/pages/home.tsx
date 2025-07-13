@@ -5,6 +5,7 @@ import { GraduationCap, User, Lock, Search, FileText, Shield, Users } from "luci
 import StudentSearch from "@/components/student-search";
 import StudentResults from "@/components/student-results";
 import Navigation from "@/components/navigation";
+import universityLogo from "@/assets/university-logo.png";
 
 export default function Home() {
   const [currentView, setCurrentView] = useState<"student" | "admin">("student");
@@ -25,14 +26,30 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-purple-500/5" />
             <div className="container mx-auto px-4 relative">
               <div className="text-center max-w-3xl mx-auto animate-fade-in">
+                <div className="flex justify-center mb-8">
+                  <div className="relative">
+                    <div className="p-4 rounded-3xl shadow-educational bg-white/90 dark:bg-card/90 backdrop-blur-sm animate-bounce-in">
+                      <img 
+                        src={universityLogo} 
+                        alt="Tribhuvan University Logo" 
+                        className="h-16 w-16 md:h-20 md:w-20 object-contain"
+                      />
+                    </div>
+                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-success rounded-full flex items-center justify-center animate-pulse">
+                      <span className="text-white text-xs font-bold">✓</span>
+                    </div>
+                  </div>
+                </div>
                 <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                  Access Your Academic
-                  <span className="block bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                    Results Instantly
+                  <span className="bg-gradient-to-r from-primary via-educational-purple to-educational-green bg-clip-text text-transparent">
+                    Tribhuvan University
+                  </span>
+                  <span className="block text-3xl md:text-4xl mt-2">
+                    Result Management System
                   </span>
                 </h2>
                 <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                  Secure, fast, and reliable access to your university examination results and academic records.
+                  Secure, fast, and reliable access to your university examination results and academic records with official T.U. authentication.
                 </p>
                 
                 {/* Feature highlights */}

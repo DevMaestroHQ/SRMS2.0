@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { GraduationCap, LogOut, Shield, User, BookOpen, Menu, X } from "lucide-react";
 import { authManager } from "@/lib/auth";
 import { useState, useEffect } from "react";
+import universityLogo from "@/assets/university-logo.png";
 
 interface NavigationProps {
   currentView: "student" | "admin";
@@ -39,23 +40,27 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
           {/* Logo Section */}
           <div className="flex items-center space-x-3 animate-fade-in">
             <div className="relative">
-              <div className="gradient-primary p-3 rounded-2xl shadow-material-2 animate-bounce-in">
-                <GraduationCap className="h-6 w-6 lg:h-7 lg:w-7 text-white" />
+              <div className="p-2 rounded-2xl shadow-material-2 animate-bounce-in bg-white/90 dark:bg-card/90 backdrop-blur-sm">
+                <img 
+                  src={universityLogo} 
+                  alt="Tribhuvan University Logo" 
+                  className="h-8 w-8 lg:h-10 lg:w-10 object-contain"
+                />
               </div>
               <div className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full animate-pulse" />
             </div>
             <div className="hidden sm:block">
               <h1 className="responsive-text-xl font-bold bg-gradient-to-r from-primary via-educational-purple to-educational-green bg-clip-text text-transparent">
-                EduResults Portal
+                Tribhuvan University
               </h1>
               <p className="text-xs text-muted-foreground flex items-center">
                 <BookOpen className="h-3 w-3 mr-1" />
-                Tribhuvan University System
+                Result Management System
               </p>
             </div>
             <div className="sm:hidden">
               <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-educational-purple bg-clip-text text-transparent">
-                EduResults
+                T.U. Results
               </h1>
             </div>
           </div>

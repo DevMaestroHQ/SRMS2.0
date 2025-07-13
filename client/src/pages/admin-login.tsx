@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { authManager } from "@/lib/auth";
 import { loginSchema, type LoginCredentials } from "@shared/schema";
+import universityLogo from "@/assets/university-logo.png";
 
 interface AdminLoginProps {
   onLoginSuccess: () => void;
@@ -50,15 +51,26 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
   return (
     <div className="max-w-md mx-auto animate-slide-up">
       <div className="text-center mb-8">
-        <div className="relative mx-auto w-20 h-20 mb-6">
-          <div className="gradient-primary rounded-2xl p-4 shadow-educational animate-bounce-in">
-            <Shield className="h-12 w-12 text-white" />
-          </div>
-          <div className="absolute -top-2 -right-2 w-6 h-6 bg-warning rounded-full flex items-center justify-center">
-            <Key className="h-3 w-3 text-white" />
+        <div className="flex justify-center mb-6">
+          <div className="relative">
+            <div className="p-3 rounded-2xl shadow-educational bg-white/90 dark:bg-card/90 backdrop-blur-sm animate-bounce-in">
+              <img 
+                src={universityLogo} 
+                alt="Tribhuvan University Logo" 
+                className="h-12 w-12 object-contain"
+              />
+            </div>
+            <div className="absolute -top-2 -right-2 w-6 h-6 bg-warning rounded-full flex items-center justify-center">
+              <Key className="h-3 w-3 text-white" />
+            </div>
           </div>
         </div>
-        <h2 className="responsive-text-2xl font-bold text-foreground">Admin Access Portal</h2>
+        <h2 className="responsive-text-2xl font-bold text-foreground">
+          <span className="bg-gradient-to-r from-primary via-educational-purple to-educational-green bg-clip-text text-transparent">
+            Tribhuvan University
+          </span>
+        </h2>
+        <h3 className="responsive-text-lg font-semibold text-foreground mt-2">Admin Access Portal</h3>
         <p className="text-muted-foreground responsive-text-base mt-2">
           Secure authentication for result management system
         </p>
