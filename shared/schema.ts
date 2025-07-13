@@ -15,6 +15,7 @@ export const studentRecords = pgTable("student_records", {
   name: text("name").notNull(),
   tuRegd: text("tu_regd").notNull(),
   marks: text("marks").notNull(),
+  imagePath: text("image_path").notNull(),
   pdfPath: text("pdf_path").notNull(),
   uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),
   uploadedBy: integer("uploaded_by").references(() => admins.id).notNull(),

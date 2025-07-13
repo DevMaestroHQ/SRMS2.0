@@ -34,8 +34,8 @@ export default function StudentResults({ result }: StudentResultsProps) {
       document.body.removeChild(a);
       
       toast({
-        title: "Download Started",
-        description: "Your marksheet is being downloaded.",
+        title: "Download Started", 
+        description: "Your marksheet PDF is being downloaded.",
       });
     } catch (error) {
       toast({
@@ -47,7 +47,7 @@ export default function StudentResults({ result }: StudentResultsProps) {
   };
 
   const handlePreview = () => {
-    window.open(`/api/download/${result.id}`, "_blank");
+    window.open(`/api/preview/${result.id}`, "_blank");
   };
 
   return (
@@ -86,7 +86,7 @@ export default function StudentResults({ result }: StudentResultsProps) {
                   className="w-full bg-primary hover:bg-primary/90 py-3"
                 >
                   <Download className="h-5 w-5 mr-2" />
-                  Download Marksheet
+                  Download PDF
                 </Button>
                 <Button
                   onClick={handlePreview}
@@ -94,19 +94,32 @@ export default function StudentResults({ result }: StudentResultsProps) {
                   className="w-full py-3"
                 >
                   <Eye className="h-5 w-5 mr-2" />
-                  Preview Marksheet
+                  View Full Size
                 </Button>
               </div>
             </div>
             
-            {/* PDF Preview */}
+            {/* Image Preview */}
             <div className="space-y-4">
               <h4 className="text-lg font-semibold text-gray-900">Marksheet Preview</h4>
-              <div className="border border-gray-300 rounded-lg overflow-hidden pdf-viewer h-96 flex items-center justify-center bg-gray-100">
-                <div className="text-center text-gray-500">
-                  <Eye className="h-12 w-12 mx-auto mb-2" />
-                  <p>PDF Preview will load here</p>
-                  <p className="text-sm">Click "Preview Marksheet" to view</p>
+              <div className="border border-gray-300 rounded-lg overflow-hidden h-96 bg-gray-100">
+                <img 
+                  src={`/api/preview/${result.id}`} 
+                  alt="Marksheet preview"
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const errorDiv = target.nextElementSibling as HTMLElement;
+                    if (errorDiv) errorDiv.style.display = 'flex';
+                  }}
+                />
+                <div className="hidden h-full w-full flex items-center justify-center text-center text-gray-500">
+                  <div>
+                    <Eye className="h-12 w-12 mx-auto mb-2" />
+                    <p>Preview not available</p>
+                    <p className="text-sm">Use download to view the document</p>
+                  </div>
                 </div>
               </div>
             </div>
