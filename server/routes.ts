@@ -101,6 +101,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Extract data using OCR
           const ocrResult = await OCRService.extractDataFromPDF(fileBuffer, file.originalname);
           
+          // Validate that we got meaningful data
+          if (ocrResult.name === "Name not found" || ocrResult.tuRegd === "Registration not found") {
+            throw new Error("Could not extract valid student information from PDF");
+          }
+          
           // Store in database
           const studentRecord = await storage.createStudentRecord({
             name: ocrResult.name,
@@ -122,10 +127,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
             fs.unlinkSync(file.path);
           }
           
+          const errorMessage = error instanceof Error ? error.message : "Failed to process PDF";
+          console.error(`OCR processing failed for ${file.originalname}:`, errorMessage);
+          
           results.push({
             filename: file.originalname,
             success: false,
-            error: "Failed to process PDF",
+            error: errorMessage,
           });
         }
       }

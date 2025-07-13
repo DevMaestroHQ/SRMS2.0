@@ -43,9 +43,11 @@ Preferred communication style: Simple, everyday language.
 
 ### File Processing
 - PDF upload handling with file type validation and size limits
-- Mock OCR service for extracting student data from marksheets
-- File storage in local uploads directory
-- Automatic data extraction and database insertion
+- Real OCR processing using pdf-parse, pdf2pic, and tesseract.js libraries
+- Intelligent text extraction with fallback to image-based OCR for scanned PDFs
+- Pattern-based extraction of student name, T.U. registration number, and marks
+- File storage in local uploads directory with automated cleanup on errors
+- Comprehensive error handling with detailed extraction failure messages
 
 ### API Structure
 - **Public Routes**: Student result search and PDF download
