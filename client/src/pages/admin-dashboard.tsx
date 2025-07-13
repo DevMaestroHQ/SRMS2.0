@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Eye, Trash2 } from "lucide-react";
+import { Eye, Trash2, Users, BarChart3, Shield, Calendar, Award, Hash, User, Database } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { authManager } from "@/lib/auth";
 import FileUpload from "@/components/file-upload";
@@ -61,86 +62,197 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-center">
+    <div className="space-y-8 animate-fade-in">
+      {/* Header Section */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900">Admin Dashboard</h2>
-          <p className="text-gray-600 mt-2">Process student images and manage results</p>
+          <h2 className="responsive-text-3xl font-bold text-foreground">Admin Dashboard</h2>
+          <p className="text-muted-foreground responsive-text-base mt-2">
+            Manage student records and process academic results
+          </p>
+        </div>
+        <div className="flex items-center space-x-3">
+          <Badge variant="outline" className="bg-success/10 text-success border-success/20">
+            <Shield className="h-3 w-3 mr-1" />
+            Authenticated
+          </Badge>
+          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+            <Database className="h-3 w-3 mr-1" />
+            {records.length} Records
+          </Badge>
         </div>
       </div>
 
-      <FileUpload />
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="bg-white/80 dark:bg-card/80 backdrop-blur-sm border-0 shadow-material-2 card-hover">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-muted-foreground text-sm font-medium">Total Records</p>
+                <p className="text-2xl font-bold text-foreground">{records.length}</p>
+              </div>
+              <div className="gradient-primary p-3 rounded-xl">
+                <Users className="h-6 w-6 text-white" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-white/80 dark:bg-card/80 backdrop-blur-sm border-0 shadow-material-2 card-hover">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-muted-foreground text-sm font-medium">This Month</p>
+                <p className="text-2xl font-bold text-foreground">
+                  {records.filter(r => new Date(r.uploadedAt).getMonth() === new Date().getMonth()).length}
+                </p>
+              </div>
+              <div className="gradient-secondary p-3 rounded-xl">
+                <BarChart3 className="h-6 w-6 text-white" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="bg-white/80 dark:bg-card/80 backdrop-blur-sm border-0 shadow-material-2 card-hover">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-muted-foreground text-sm font-medium">Processing</p>
+                <p className="text-2xl font-bold text-success">Active</p>
+              </div>
+              <div className="gradient-accent p-3 rounded-xl">
+                <Shield className="h-6 w-6 text-white" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
-      <Card className="shadow-material-2 overflow-hidden">
-        <CardHeader className="px-6 py-4 border-b border-gray-200">
-          <CardTitle className="text-xl font-semibold text-gray-900">Student Records</CardTitle>
-          <p className="text-gray-600 mt-1">All processed images and extracted data</p>
+      {/* File Upload Section */}
+      <div className="animate-slide-up">
+        <FileUpload />
+      </div>
+
+      {/* Records Table */}
+      <Card className="shadow-educational border-0 overflow-hidden bg-white/90 dark:bg-card/90 backdrop-blur-sm">
+        <CardHeader className="bg-gradient-to-r from-primary/10 via-educational-purple/10 to-educational-green/10 border-b border-border/50">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="gradient-primary p-2 rounded-xl">
+                <Database className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <CardTitle className="responsive-text-xl text-foreground">Student Records</CardTitle>
+                <p className="text-muted-foreground text-sm">All processed images and extracted data</p>
+              </div>
+            </div>
+            <Badge variant="outline" className="bg-background/50">
+              {records.length} Total
+            </Badge>
+          </div>
         </CardHeader>
         
         <CardContent className="p-0">
           {isLoading ? (
             <div className="p-8 text-center">
-              <p className="text-gray-500">Loading records...</p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground">Loading records...</p>
             </div>
           ) : records.length === 0 ? (
-            <div className="p-8 text-center">
-              <p className="text-gray-500">No student records found. Upload some student images to get started.</p>
+            <div className="p-12 text-center space-y-4">
+              <div className="bg-muted/50 p-6 rounded-2xl w-fit mx-auto">
+                <Users className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+              </div>
+              <div>
+                <p className="text-foreground font-semibold">No student records found</p>
+                <p className="text-muted-foreground text-sm">Upload some student images to get started</p>
+              </div>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-muted/50 backdrop-blur-sm">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Student Name
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      <div className="flex items-center space-x-2">
+                        <User className="h-4 w-4" />
+                        <span>Student Name</span>
+                      </div>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      T.U. Regd. No.
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      <div className="flex items-center space-x-2">
+                        <Hash className="h-4 w-4" />
+                        <span>T.U. Regd. No.</span>
+                      </div>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Marks
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      <div className="flex items-center space-x-2">
+                        <Award className="h-4 w-4" />
+                        <span>Marks</span>
+                      </div>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Upload Date
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                      <div className="flex items-center space-x-2">
+                        <Calendar className="h-4 w-4" />
+                        <span>Upload Date</span>
+                      </div>
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th className="px-6 py-4 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                       Actions
                     </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {records.map((record) => (
-                    <tr key={record.id}>
+                <tbody className="bg-white/50 dark:bg-card/50 divide-y divide-border/50">
+                  {records.map((record, index) => (
+                    <tr key={record.id} className="hover:bg-muted/20 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{record.name}</div>
+                        <div className="flex items-center space-x-3">
+                          <div className="gradient-primary p-2 rounded-lg">
+                            <User className="h-4 w-4 text-white" />
+                          </div>
+                          <div>
+                            <div className="text-sm font-semibold text-foreground">{record.name}</div>
+                            <div className="text-xs text-muted-foreground">Record #{record.id}</div>
+                          </div>
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{record.tuRegd}</div>
+                        <div className="text-sm font-mono text-foreground bg-muted/30 px-2 py-1 rounded">
+                          {record.tuRegd}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{record.marks}</div>
+                        <Badge variant="outline" className="bg-success/10 text-success border-success/20">
+                          {record.marks}
+                        </Badge>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{formatDate(record.uploadedAt.toString())}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {formatDate(record.uploadedAt.toString())}
+                        </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleViewRecord(record.id)}
-                          className="text-primary hover:text-primary/80"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteRecord(record.id)}
-                          className="text-red-600 hover:text-red-800"
-                          disabled={deleteRecordMutation.isPending}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleViewRecord(record.id)}
+                            className="text-primary hover:text-primary/80 hover:bg-primary/10"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteRecord(record.id)}
+                            className="text-destructive hover:text-destructive/80 hover:bg-destructive/10"
+                            disabled={deleteRecordMutation.isPending}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}

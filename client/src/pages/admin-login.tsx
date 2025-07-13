@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { LogIn, Shield } from "lucide-react";
+import { LogIn, Shield, Mail, Lock, Key } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { authManager } from "@/lib/auth";
@@ -48,17 +48,29 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
   };
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-md mx-auto animate-slide-up">
       <div className="text-center mb-8">
-        <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-          <Shield className="text-primary text-2xl" />
+        <div className="relative mx-auto w-20 h-20 mb-6">
+          <div className="gradient-primary rounded-2xl p-4 shadow-educational animate-bounce-in">
+            <Shield className="h-12 w-12 text-white" />
+          </div>
+          <div className="absolute -top-2 -right-2 w-6 h-6 bg-warning rounded-full flex items-center justify-center">
+            <Key className="h-3 w-3 text-white" />
+          </div>
         </div>
-        <h2 className="text-2xl font-bold text-gray-900">Admin Login</h2>
-        <p className="text-gray-600 mt-2">Access the admin dashboard to manage student results</p>
+        <h2 className="responsive-text-2xl font-bold text-foreground">Admin Access Portal</h2>
+        <p className="text-muted-foreground responsive-text-base mt-2">
+          Secure authentication for result management system
+        </p>
       </div>
       
-      <Card className="shadow-material-2">
-        <CardContent className="p-8">
+      <Card className="shadow-educational border-0 bg-white/90 dark:bg-card/90 backdrop-blur-sm">
+        <CardHeader className="text-center pb-2">
+          <CardTitle className="responsive-text-lg text-foreground">Administrator Login</CardTitle>
+          <p className="text-muted-foreground text-sm">Enter your credentials to access the dashboard</p>
+        </CardHeader>
+        
+        <CardContent className="p-6 lg:p-8">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
@@ -66,16 +78,20 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700">
+                    <FormLabel className="text-sm font-semibold text-foreground flex items-center">
+                      <Mail className="h-4 w-4 mr-2 text-primary" />
                       Email Address
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="email"
-                        placeholder="admin@university.edu"
-                        className="py-3 focus:ring-2 focus:ring-primary"
-                      />
+                      <div className="relative">
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder="admin@university.edu"
+                          className="pl-12 py-3 text-base border-2 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl transition-all duration-200"
+                        />
+                        <Mail className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -87,16 +103,20 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-sm font-medium text-gray-700">
+                    <FormLabel className="text-sm font-semibold text-foreground flex items-center">
+                      <Lock className="h-4 w-4 mr-2 text-primary" />
                       Password
                     </FormLabel>
                     <FormControl>
-                      <Input
-                        {...field}
-                        type="password"
-                        placeholder="••••••••"
-                        className="py-3 focus:ring-2 focus:ring-primary"
-                      />
+                      <div className="relative">
+                        <Input
+                          {...field}
+                          type="password"
+                          placeholder="••••••••"
+                          className="pl-12 py-3 text-base border-2 border-border focus:border-primary focus:ring-2 focus:ring-primary/20 rounded-xl transition-all duration-200"
+                        />
+                        <Lock className="absolute left-3 top-3 h-5 w-5 text-muted-foreground" />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -105,14 +125,29 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
               
               <Button
                 type="submit"
-                className="w-full py-3 bg-primary hover:bg-primary/90"
+                className="w-full py-4 text-base font-semibold gradient-primary hover:opacity-90 rounded-xl shadow-material-2 hover:shadow-educational transition-all duration-300 transform hover:scale-[1.02]"
                 disabled={loginMutation.isPending}
               >
-                <LogIn className="h-5 w-5 mr-2" />
-                {loginMutation.isPending ? "Signing In..." : "Sign In"}
+                {loginMutation.isPending ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 mr-2 border-b-2 border-white"></div>
+                    Authenticating...
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="h-5 w-5 mr-2" />
+                    Access Dashboard
+                  </>
+                )}
               </Button>
             </form>
           </Form>
+          
+          <div className="mt-6 p-4 bg-muted/50 rounded-xl">
+            <p className="text-xs text-muted-foreground text-center">
+              Default credentials: admin@university.edu / admin123
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>
