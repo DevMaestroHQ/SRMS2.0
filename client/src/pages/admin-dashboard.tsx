@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Eye, Trash2, Users, BarChart3, Shield, Calendar, Award, Hash, User, Database } from "lucide-react";
+import { Eye, Trash2, Users, BarChart3, Shield, Calendar, Award, Hash, User, Database, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -47,9 +47,49 @@ export default function AdminDashboard() {
     },
   });
 
+  const deleteAllRecordsMutation = useMutation({
+    mutationFn: async () => {
+      const response = await fetch("/api/admin/records", {
+        method: "DELETE",
+        headers: authManager.getAuthHeaders(),
+      });
+      if (!response.ok) throw new Error("Failed to delete all records");
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "All Records Deleted",
+        description: `Successfully deleted ${data.deletedCount} student records.`,
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/records"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Delete All Failed",
+        description: error.message || "Failed to delete all records.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleDeleteRecord = (recordId: number) => {
     if (confirm("Are you sure you want to delete this record? This action cannot be undone.")) {
       deleteRecordMutation.mutate(recordId);
+    }
+  };
+
+  const handleDeleteAllRecords = () => {
+    if (records.length === 0) {
+      toast({
+        title: "No Records",
+        description: "There are no student records to delete.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (confirm(`Are you sure you want to delete ALL ${records.length} student records? This action cannot be undone and will permanently remove all uploaded files.`)) {
+      deleteAllRecordsMutation.mutate();
     }
   };
 
@@ -148,9 +188,32 @@ export default function AdminDashboard() {
                 <p className="text-muted-foreground text-sm">All processed images and extracted data</p>
               </div>
             </div>
-            <Badge variant="outline" className="bg-background/50">
-              {records.length} Total
-            </Badge>
+            <div className="flex items-center space-x-3">
+              <Badge variant="outline" className="bg-background/50">
+                {records.length} Total
+              </Badge>
+              {records.length > 0 && (
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleDeleteAllRecords}
+                  disabled={deleteAllRecordsMutation.isPending}
+                  className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  {deleteAllRecordsMutation.isPending ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <AlertTriangle className="h-4 w-4 mr-2" />
+                      Delete All
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
           </div>
         </CardHeader>
         

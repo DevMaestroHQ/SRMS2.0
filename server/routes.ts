@@ -240,6 +240,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Delete all student records (admin only)
+  app.delete("/api/admin/records", authenticateAdmin, async (req, res) => {
+    try {
+      // Get all records to delete associated files
+      const records = await storage.getAllStudentRecords();
+      
+      // Delete all associated files
+      for (const record of records) {
+        if (record.imagePath && fs.existsSync(record.imagePath)) {
+          fs.unlinkSync(record.imagePath);
+        }
+        if (fs.existsSync(record.pdfPath)) {
+          fs.unlinkSync(record.pdfPath);
+        }
+      }
+      
+      // Delete all records from storage
+      await storage.deleteAllStudentRecords();
+      
+      res.json({ 
+        message: "All student records deleted successfully", 
+        deletedCount: records.length 
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete all records" });
+    }
+  });
+
   // Student search endpoint
   app.post("/api/get-result", async (req, res) => {
     try {
@@ -255,8 +283,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         id: record.id,
         name: record.name,
         tuRegd: record.tuRegd,
-        marks: record.marks,
-        uploadedAt: record.uploadedAt,
+        result: record.result,
       });
     } catch (error) {
       res.status(400).json({ message: "Invalid search parameters" });

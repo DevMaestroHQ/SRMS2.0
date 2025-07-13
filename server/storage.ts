@@ -12,6 +12,7 @@ export interface IStorage {
   getStudentRecord(name: string, tuRegd: string): Promise<StudentRecord | undefined>;
   getAllStudentRecords(): Promise<StudentRecord[]>;
   deleteStudentRecord(id: number): Promise<void>;
+  deleteAllStudentRecords(): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -130,6 +131,10 @@ export class MemStorage implements IStorage {
 
   async deleteStudentRecord(id: number): Promise<void> {
     this.studentRecords.delete(id);
+  }
+
+  async deleteAllStudentRecords(): Promise<void> {
+    this.studentRecords.clear();
   }
 }
 
