@@ -5,6 +5,7 @@ import { GraduationCap, User, Lock, Search, FileText, Shield, Users } from "luci
 import StudentSearch from "@/components/student-search";
 import StudentResults from "@/components/student-results";
 import Navigation from "@/components/navigation";
+import Footer from "@/components/footer";
 import universityLogo from "@/assets/university-logo.png";
 
 export default function Home() {

@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
 import Navigation from "@/components/navigation";
+import Footer from "@/components/footer";
 import StudentSearch from "@/components/student-search";
 import StudentResults from "@/components/student-results";
 import AdminLogin from "@/pages/admin-login";
@@ -90,40 +91,7 @@ function Router() {
         )}
       </main>
 
-      {/* Enhanced Footer */}
-      <footer className="relative bg-card/50 backdrop-blur-sm border-t border-border/50 mt-auto">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-educational-purple/5" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center space-y-4">
-            <div className="flex justify-center items-center space-x-2">
-              <div className="w-8 h-8 gradient-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">TU</span>
-              </div>
-              <div className="text-left">
-                <p className="font-semibold text-foreground">Tribhuvan University</p>
-                <p className="text-xs text-muted-foreground">Digital Education Platform</p>
-              </div>
-            </div>
-            <p className="text-muted-foreground responsive-text-sm">
-              © 2025 Academic Result Management System. All rights reserved.
-            </p>
-            <div className="flex justify-center space-x-6 text-xs text-muted-foreground">
-              <span className="flex items-center">
-                <div className="w-2 h-2 bg-success rounded-full mr-2 animate-pulse" />
-                Secure Access
-              </span>
-              <span className="flex items-center">
-                <div className="w-2 h-2 bg-primary rounded-full mr-2 animate-pulse" />
-                Real-time Results
-              </span>
-              <span className="flex items-center">
-                <div className="w-2 h-2 bg-educational-purple rounded-full mr-2 animate-pulse" />
-                24/7 Available
-              </span>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
