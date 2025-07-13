@@ -65,7 +65,7 @@ export default function AdminDashboard() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Admin Dashboard</h2>
-          <p className="text-gray-600 mt-2">Manage student marksheets and results</p>
+          <p className="text-gray-600 mt-2">Process student images and manage results</p>
         </div>
       </div>
 
@@ -74,7 +74,7 @@ export default function AdminDashboard() {
       <Card className="shadow-material-2 overflow-hidden">
         <CardHeader className="px-6 py-4 border-b border-gray-200">
           <CardTitle className="text-xl font-semibold text-gray-900">Student Records</CardTitle>
-          <p className="text-gray-600 mt-1">All processed marksheets and extracted data</p>
+          <p className="text-gray-600 mt-1">All processed images and extracted data</p>
         </CardHeader>
         
         <CardContent className="p-0">
@@ -84,7 +84,7 @@ export default function AdminDashboard() {
             </div>
           ) : records.length === 0 ? (
             <div className="p-8 text-center">
-              <p className="text-gray-500">No student records found. Upload some marksheets to get started.</p>
+              <p className="text-gray-500">No student records found. Upload some student images to get started.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">

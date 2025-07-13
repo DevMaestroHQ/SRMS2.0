@@ -29,7 +29,7 @@ export default function FileUpload() {
     mutationFn: async (files: File[]) => {
       const formData = new FormData();
       files.forEach((file) => {
-        formData.append("marksheets", file);
+        formData.append("studentImages", file);
       });
 
       const response = await fetch("/api/admin/upload", {
@@ -71,13 +71,15 @@ export default function FileUpload() {
   const handleFileSelection = (files: FileList | null) => {
     if (!files) return;
     
-    const pdfFiles = Array.from(files).filter(file => file.type === "application/pdf");
-    setSelectedFiles(pdfFiles);
+    const jpgFiles = Array.from(files).filter(file => 
+      file.type === "image/jpeg" || file.type === "image/jpg"
+    );
+    setSelectedFiles(jpgFiles);
     
-    if (pdfFiles.length !== files.length) {
+    if (jpgFiles.length !== files.length) {
       toast({
         title: "Invalid Files",
-        description: "Only PDF files are allowed. Non-PDF files were ignored.",
+        description: "Only JPG/JPEG files are allowed. Non-JPG files were ignored.",
         variant: "destructive",
       });
     }
@@ -113,7 +115,7 @@ export default function FileUpload() {
     if (selectedFiles.length === 0) {
       toast({
         title: "No Files Selected",
-        description: "Please select PDF files to upload.",
+        description: "Please select JPG files to upload.",
         variant: "destructive",
       });
       return;
@@ -127,7 +129,7 @@ export default function FileUpload() {
       <Card className="shadow-material-2">
         <CardHeader>
           <CardTitle className="text-xl font-semibold text-gray-900">
-            Upload Student Marksheets
+            Upload Student Images
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -143,15 +145,15 @@ export default function FileUpload() {
                 <CloudUpload className="text-primary text-2xl" />
               </div>
               <div>
-                <p className="text-lg font-medium text-gray-900">Drop PDF files here</p>
+                <p className="text-lg font-medium text-gray-900">Drop JPG files here</p>
                 <p className="text-gray-600">or click to browse and select files</p>
-                <p className="text-sm text-gray-500 mt-2">Supports multiple PDF files</p>
+                <p className="text-sm text-gray-500 mt-2">Supports multiple JPG/JPEG files</p>
               </div>
             </div>
             <input
               ref={fileInputRef}
               type="file"
-              accept=".pdf"
+              accept=".jpg,.jpeg"
               multiple
               className="hidden"
               onChange={(e) => handleFileSelection(e.target.files)}
@@ -191,7 +193,7 @@ export default function FileUpload() {
                   className="bg-primary hover:bg-primary/90"
                 >
                   <Upload className="h-5 w-5 mr-2" />
-                  {uploadMutation.isPending ? "Processing..." : "Process Marksheets"}
+                  {uploadMutation.isPending ? "Processing..." : "Process Images"}
                 </Button>
                 <Button
                   variant="outline"

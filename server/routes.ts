@@ -24,14 +24,14 @@ const upload = multer({
     },
   }),
   fileFilter: (req, file, cb) => {
-    if (file.mimetype === "application/pdf") {
+    if (file.mimetype === "image/jpeg" || file.mimetype === "image/jpg") {
       cb(null, true);
     } else {
-      cb(new Error("Only PDF files are allowed"));
+      cb(new Error("Only JPG/JPEG files are allowed"));
     }
   },
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
+    fileSize: 5 * 1024 * 1024, // 5MB limit for images
   },
 });
 
@@ -82,8 +82,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
-  // Upload and process marksheets
-  app.post("/api/admin/upload", authenticateAdmin, upload.array("marksheets", 10), async (req: AuthenticatedRequest, res) => {
+  // Upload and process student images
+  app.post("/api/admin/upload", authenticateAdmin, upload.array("studentImages", 10), async (req: AuthenticatedRequest, res) => {
     try {
       const files = req.files as Express.Multer.File[];
       
@@ -98,12 +98,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Read file buffer for OCR processing
           const fileBuffer = fs.readFileSync(file.path);
           
-          // Extract data using OCR
-          const ocrResult = await OCRService.extractDataFromPDF(fileBuffer, file.originalname);
+          // Extract data using OCR on JPG
+          const ocrResult = await OCRService.extractDataFromJPG(fileBuffer, file.originalname);
           
           // Validate that we got meaningful data
           if (ocrResult.name === "Name not found" || ocrResult.tuRegd === "Registration not found") {
-            throw new Error("Could not extract valid student information from PDF");
+            throw new Error("Could not extract valid student information from JPG image");
           }
           
           // Store in database
@@ -127,7 +127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
             fs.unlinkSync(file.path);
           }
           
-          const errorMessage = error instanceof Error ? error.message : "Failed to process PDF";
+          const errorMessage = error instanceof Error ? error.message : "Failed to process JPG image";
           console.error(`OCR processing failed for ${file.originalname}:`, errorMessage);
           
           results.push({

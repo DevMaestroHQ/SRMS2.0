@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a full-stack web application for managing university student results, built with a React frontend and Express.js backend. The system allows students to search for their exam results and provides an admin interface for uploading and managing marksheet documents with OCR processing capabilities.
+This is a full-stack web application for managing university student verification, built with a React frontend and Express.js backend. The system allows students to search for their records and provides an admin interface for uploading and processing student images with OCR text extraction to extract student names and T.U. registration numbers for verification purposes.
 
 ## User Preferences
 
@@ -42,12 +42,12 @@ Preferred communication style: Simple, everyday language.
 - Client-side auth state management with localStorage persistence
 
 ### File Processing
-- PDF upload handling with file type validation and size limits
-- Real OCR processing using pdf-parse, pdf2pic, and tesseract.js libraries
-- Intelligent text extraction with fallback to image-based OCR for scanned PDFs
-- Pattern-based extraction of student name, T.U. registration number, and marks
-- File storage in local uploads directory with automated cleanup on errors
+- JPG/JPEG image upload handling with file type validation and size limits (5MB max)
+- Real OCR processing using tesseract.js library for text extraction from images
+- Pattern-based extraction of student name and T.U. registration number only
+- Image storage in local uploads directory with automated cleanup on errors
 - Comprehensive error handling with detailed extraction failure messages
+- Focused on student verification rather than comprehensive result management
 
 ### API Structure
 - **Public Routes**: Student result search and PDF download
