@@ -78,11 +78,27 @@ This system provides a comprehensive solution for university result management, 
    ```
 
 3. **Environment Setup**
-   Create a `.env` file in the root directory:
+   Copy the example environment file and configure it:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Edit the `.env` file with your settings:
    ```env
-   DATABASE_URL=your_postgresql_connection_string
-   JWT_SECRET=your_jwt_secret_key
+   # Admin Login Credentials - CHANGE FOR PRODUCTION
+   ADMIN_EMAIL=admin@university.edu
+   ADMIN_PASSWORD=admin123
+   ADMIN_NAME=System Administrator
+   
+   # Security Configuration - REQUIRED FOR PRODUCTION
+   JWT_SECRET=your-super-secret-jwt-key-here
    NODE_ENV=development
+   
+   # Database Configuration
+   DATABASE_URL=your_postgresql_connection_string
+   
+   # Server Configuration
+   PORT=5000
    ```
 
 4. **Database Setup**
@@ -104,11 +120,21 @@ The system uses two main tables:
 - **admins**: Store administrator credentials and information
 - **student_records**: Contains student data, marks, and file references
 
-### Default Admin Account
+### Admin Account Configuration
+
+The system supports both default and custom admin credentials:
+
+**Development Mode (Default)**:
 - **Email**: `admin@university.edu`
 - **Password**: `admin123`
 
-⚠️ **Important**: Change the default admin credentials before production deployment.
+**Production Mode (Environment Variables)**:
+Set these environment variables for secure production deployment:
+- `ADMIN_EMAIL` - Your admin email address
+- `ADMIN_PASSWORD` - Your secure password
+- `ADMIN_NAME` - Administrator's display name
+
+⚠️ **Security Warning**: Always change the default credentials for production by setting the environment variables above.
 
 ### File Storage
 - **Uploads**: `./uploads/` - Original JPG images
@@ -220,18 +246,26 @@ The system uses Tesseract.js for real OCR processing:
    ```
 
 3. **Environment Configuration**
-   Create a `.env` file in the root directory:
+   Copy the example environment file and configure it:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Edit the `.env` file with your settings:
    ```env
-   # Database Configuration
-   DATABASE_URL="postgresql://username:password@localhost:5432/university_results"
+   # Admin Login Credentials - CHANGE FOR PRODUCTION
+   ADMIN_EMAIL=admin@university.edu
+   ADMIN_PASSWORD=admin123
+   ADMIN_NAME=System Administrator
    
-   # JWT Configuration
-   JWT_SECRET="your-super-secret-jwt-key-here"
-   
-   # Application Environment
+   # Security Configuration - REQUIRED FOR PRODUCTION
+   JWT_SECRET=your-super-secret-jwt-key-here
    NODE_ENV=development
    
-   # Optional: Custom Port (default is 5000)
+   # Database Configuration
+   DATABASE_URL=postgresql://username:password@localhost:5432/university_results
+   
+   # Server Configuration
    PORT=5000
    ```
 
@@ -290,9 +324,17 @@ The system uses Tesseract.js for real OCR processing:
 2. **Environment Variables for Production**
    Set the following in your Replit Secrets:
    ```env
-   DATABASE_URL=your_production_database_url
-   JWT_SECRET=your_secure_jwt_secret_key
+   # Admin Credentials - CHANGE THESE FOR PRODUCTION
+   ADMIN_EMAIL=your-admin@university.edu
+   ADMIN_PASSWORD=your-secure-password-here
+   ADMIN_NAME=Your Admin Name
+   
+   # Security Configuration
+   JWT_SECRET=your-secure-jwt-secret-key
    NODE_ENV=production
+   
+   # Database Configuration
+   DATABASE_URL=your_production_database_url
    ```
 
 3. **Deploy via Replit**
@@ -434,6 +476,9 @@ The system uses Tesseract.js for real OCR processing:
 ### Environment Variables
 
 #### Required Variables
+- `ADMIN_EMAIL` - Administrator email address for login
+- `ADMIN_PASSWORD` - Administrator password (use strong password for production)
+- `ADMIN_NAME` - Administrator display name
 - `DATABASE_URL` - PostgreSQL connection string
 - `JWT_SECRET` - Secret key for JWT token generation (minimum 32 characters)
 - `NODE_ENV` - Set to 'production' for production deployment
@@ -443,11 +488,39 @@ The system uses Tesseract.js for real OCR processing:
 - `CORS_ORIGIN` - Allowed CORS origins (default: localhost)
 - `SESSION_SECRET` - Additional session security (auto-generated if not provided)
 
+### Production Security Configuration
+
+#### Admin Credentials Setup
+
+**Method 1: Environment Variables (Recommended)**
+Set these environment variables in your hosting platform:
+```bash
+ADMIN_EMAIL=your-admin@university.edu
+ADMIN_PASSWORD=your-secure-password-here
+ADMIN_NAME=Your Admin Name
+JWT_SECRET=your-random-32-character-secret-key
+```
+
+**Method 2: Direct Code Changes**
+If environment variables aren't available, modify `server/storage.ts`:
+```typescript
+// In initializeDefaultAdmin() method
+const adminEmail = "your-admin@university.edu";
+const adminPassword = "your-secure-password";
+const adminName = "Your Admin Name";
+```
+
+#### Security Requirements
+- **Password**: Minimum 12 characters with mixed case, numbers, and symbols
+- **JWT Secret**: Random 32+ character string
+- **Email**: Use official university domain
+- **Environment**: Set `NODE_ENV=production`
+
 ### Post-Deployment Checklist
 
 1. **Security Configuration**
-   - [ ] Change default admin password
-   - [ ] Set strong JWT secret
+   - [ ] Change default admin credentials using environment variables
+   - [ ] Set strong JWT secret (32+ characters)
    - [ ] Configure CORS properly
    - [ ] Enable HTTPS/SSL
    - [ ] Set up firewall rules
