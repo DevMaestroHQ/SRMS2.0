@@ -174,7 +174,9 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
           
           <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl border-2 border-blue-200 dark:border-blue-500/20">
             <p className="text-muted-foreground text-center font-medium">
-              Default credentials: admin@university.edu / admin123
+              {process.env.NODE_ENV === "development" 
+                ? "Development credentials: admin@university.edu / admin123" 
+                : "Contact administrator for login credentials"}
             </p>
           </div>
         </div>
