@@ -126,60 +126,69 @@ export default function FileUpload() {
   };
 
   return (
-    <div className="space-y-8">
-      <Card className="shadow-educational border-0 bg-white/90 dark:bg-card/90 backdrop-blur-sm">
-        <CardHeader className="bg-gradient-to-r from-primary/10 via-educational-purple/10 to-educational-green/10 border-b border-border/50">
-          <div className="flex items-center space-x-3">
-            <div className="gradient-primary p-2 rounded-xl">
-              <Camera className="h-5 w-5 text-white" />
-            </div>
-            <div>
-              <CardTitle className="responsive-text-xl text-foreground">
-                Upload Student Images
-              </CardTitle>
-              <p className="text-muted-foreground text-sm">
-                Process marksheet images with OCR technology
-              </p>
+    <div className="space-y-12">
+      <div className="modern-card hover-lift p-8 md:p-10 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-500/20 via-blue-500/20 to-pink-500/20"></div>
+          <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-gradient-radial from-purple-500/10 to-transparent rounded-full"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-radial from-blue-500/10 to-transparent rounded-full"></div>
+        </div>
+
+        {/* Header */}
+        <div className="text-center mb-10 relative z-10">
+          <div className="flex justify-center mb-6">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center shadow-lg">
+              <Camera className="h-8 w-8 text-white" />
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="p-6 lg:p-8 space-y-6">
+          <h2 className="responsive-text-3xl font-bold text-foreground mb-4">
+            Upload Student Images
+          </h2>
+          <p className="text-muted-foreground responsive-text-lg leading-relaxed">
+            Process marksheet images with advanced OCR technology
+          </p>
+        </div>
+
+        <div className="relative z-10 space-y-8">
           {/* Drop Zone */}
           <div
             onClick={handleDropZoneClick}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
-            className="border-2 border-dashed border-primary/30 rounded-2xl p-8 text-center hover:border-primary/50 hover:bg-primary/5 transition-all duration-300 cursor-pointer bg-gradient-to-br from-primary/5 via-transparent to-educational-green/5"
+            className="border-3 border-dashed border-purple-300 dark:border-purple-500/30 rounded-3xl p-12 text-center hover:border-purple-400 dark:hover:border-purple-400/50 hover:bg-purple-50 dark:hover:bg-purple-500/10 transition-all duration-300 cursor-pointer bg-gradient-to-br from-purple-50/50 to-blue-50/50 dark:from-purple-900/10 dark:to-blue-900/10"
           >
-            <div className="space-y-6">
-              <div className="relative mx-auto w-20 h-20">
-                <div className="gradient-primary rounded-2xl p-4 shadow-material-2 animate-bounce-in">
-                  <CloudUpload className="h-12 w-12 text-white" />
-                </div>
-                <div className="absolute -top-2 -right-2 w-6 h-6 bg-success rounded-full flex items-center justify-center">
-                  <Image className="h-3 w-3 text-white" />
+            <div className="space-y-8">
+              <div className="flex justify-center">
+                <div className="relative">
+                  <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shadow-vibrant floating-animation">
+                    <CloudUpload className="h-14 w-14 text-white" />
+                  </div>
+                  <div className="absolute -top-3 -right-3 w-10 h-10 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center pulse-animation">
+                    <Image className="h-5 w-5 text-white" />
+                  </div>
                 </div>
               </div>
-              <div className="space-y-2">
-                <p className="responsive-text-lg font-semibold text-foreground">
+              <div className="space-y-4">
+                <p className="responsive-text-2xl font-bold text-foreground">
                   Drop Student Marksheet Images Here
                 </p>
-                <p className="text-muted-foreground">
+                <p className="text-muted-foreground responsive-text-lg">
                   or click to browse and select files
                 </p>
-                <div className="flex items-center justify-center space-x-4 pt-2">
-                  <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
-                    <Image className="h-3 w-3 mr-1" />
-                    JPG/JPEG
-                  </Badge>
-                  <Badge variant="outline" className="bg-success/10 text-success border-success/20">
-                    <Files className="h-3 w-3 mr-1" />
-                    Multiple Files
-                  </Badge>
-                  <Badge variant="outline" className="bg-educational-purple/10 text-educational-purple border-educational-purple/20">
-                    <Camera className="h-3 w-3 mr-1" />
-                    OCR Ready
-                  </Badge>
+                <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
+                  <div className="px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-full flex items-center space-x-2 shadow-lg">
+                    <Image className="h-4 w-4" />
+                    <span className="font-semibold">JPG/JPEG</span>
+                  </div>
+                  <div className="px-4 py-2 bg-gradient-to-r from-blue-500 to-green-500 text-white rounded-full flex items-center space-x-2 shadow-lg">
+                    <Files className="h-4 w-4" />
+                    <span className="font-semibold">Multiple Files</span>
+                  </div>
+                  <div className="px-4 py-2 bg-gradient-to-r from-green-500 to-purple-500 text-white rounded-full flex items-center space-x-2 shadow-lg">
+                    <Camera className="h-4 w-4" />
+                    <span className="font-semibold">OCR Ready</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -266,70 +275,70 @@ export default function FileUpload() {
               </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Processing Status */}
       {processingResults.length > 0 && (
-        <Card className="shadow-educational border-0 bg-white/90 dark:bg-card/90 backdrop-blur-sm animate-scale-in">
-          <CardHeader className="bg-gradient-to-r from-success/10 via-educational-green/10 to-primary/10 border-b border-border/50">
-            <div className="flex items-center space-x-3">
-              <div className="gradient-secondary p-2 rounded-xl">
-                <CheckCircle className="h-5 w-5 text-white" />
+        <div className="modern-card hover-lift p-8 md:p-10 relative overflow-hidden animate-scale-in">
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-green-500/20 via-blue-500/20 to-purple-500/20"></div>
+          </div>
+          <div className="relative z-10">
+            <div className="text-center mb-8">
+              <div className="flex justify-center mb-4">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <CheckCircle className="h-6 w-6 text-white" />
+                </div>
               </div>
-              <div>
-                <CardTitle className="responsive-text-xl text-foreground">
-                  Processing Results
-                </CardTitle>
-                <p className="text-muted-foreground text-sm">
-                  OCR extraction and validation status
-                </p>
-              </div>
+              <h3 className="responsive-text-2xl font-bold text-foreground mb-2">
+                Processing Results
+              </h3>
+              <p className="text-muted-foreground text-lg">
+                OCR extraction and validation status
+              </p>
             </div>
-          </CardHeader>
-          <CardContent className="p-6 lg:p-8">
-            <div className="space-y-4">
+            <div className="space-y-6">
               {processingResults.map((result, index) => (
-                <div key={index} className="flex items-center justify-between p-4 border border-border/50 rounded-xl bg-gradient-to-r from-background/50 to-muted/30 hover:shadow-material-1 transition-shadow">
-                  <div className="flex items-center space-x-4">
-                    <div className={`p-2 rounded-lg ${result.success ? 'bg-success/20' : 'bg-destructive/20'}`}>
-                      {result.success ? (
-                        <CheckCircle className="text-success h-5 w-5" />
-                      ) : (
-                        <AlertCircle className="text-destructive h-5 w-5" />
-                      )}
+                <div key={index} className="p-6 border-2 border-border/50 rounded-2xl bg-gradient-to-r from-white to-gray-50 dark:from-card dark:to-card/50 shadow-lg hover:shadow-xl transition-all duration-300">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${result.success ? 'bg-gradient-to-r from-green-500 to-blue-500' : 'bg-gradient-to-r from-red-500 to-orange-500'}`}>
+                        {result.success ? (
+                          <CheckCircle className="text-white h-6 w-6" />
+                        ) : (
+                          <AlertCircle className="text-white h-6 w-6" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-bold text-foreground text-lg">{result.filename}</p>
+                        {result.success && result.extracted && (
+                          <div className="flex flex-wrap gap-4 mt-2">
+                            <span className="text-muted-foreground">
+                              <strong>Name:</strong> {result.extracted.name}
+                            </span>
+                            <span className="text-muted-foreground">
+                              <strong>Reg:</strong> {result.extracted.tuRegd}
+                            </span>
+                            <span className="text-muted-foreground">
+                              <strong>Marks:</strong> {result.extracted.marks}
+                            </span>
+                          </div>
+                        )}
+                        {!result.success && result.error && (
+                          <p className="text-red-600 mt-2 font-medium">{result.error}</p>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <p className="font-semibold text-foreground">{result.filename}</p>
-                      {result.success && result.extracted && (
-                        <div className="flex items-center space-x-4 mt-1">
-                          <span className="text-sm text-muted-foreground">
-                            <strong>Name:</strong> {result.extracted.name}
-                          </span>
-                          <span className="text-sm text-muted-foreground">
-                            <strong>Reg:</strong> {result.extracted.tuRegd}
-                          </span>
-                          <span className="text-sm text-muted-foreground">
-                            <strong>Marks:</strong> {result.extracted.marks}
-                          </span>
-                        </div>
-                      )}
-                      {!result.success && result.error && (
-                        <p className="text-sm text-destructive mt-1">{result.error}</p>
-                      )}
+                    <div className={`px-4 py-2 rounded-full font-bold text-white ${result.success ? 'bg-gradient-to-r from-green-500 to-blue-500' : 'bg-gradient-to-r from-red-500 to-orange-500'}`}>
+                      {result.success ? 'Processed' : 'Failed'}
                     </div>
                   </div>
-                  <Badge
-                    variant={result.success ? "default" : "destructive"}
-                    className={result.success ? "bg-success/20 text-success border-success/20" : ""}
-                  >
-                    {result.success ? 'Processed' : 'Failed'}
-                  </Badge>
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   );
