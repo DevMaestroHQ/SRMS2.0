@@ -1,6 +1,7 @@
-import { Download, Eye, CheckCircle } from "lucide-react";
+import { Download, Eye, CheckCircle, Calendar, User, Hash, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 
 interface StudentResultsProps {
@@ -53,10 +54,20 @@ export default function StudentResults({ result }: StudentResultsProps) {
   return (
     <div className="mt-8">
       <Card className="shadow-material-2 overflow-hidden">
-        <CardHeader className="bg-[hsl(var(--success))] text-white">
-          <div className="flex items-center">
-            <CheckCircle className="h-6 w-6 mr-2" />
-            <h3 className="text-lg font-semibold">Result Found</h3>
+        <CardHeader className="bg-gradient-to-r from-green-500 to-emerald-600 text-white">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="bg-white/20 p-2 rounded-lg mr-3">
+                <CheckCircle className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold">Result Found</h3>
+                <p className="text-green-100 text-sm">Academic record retrieved successfully</p>
+              </div>
+            </div>
+            <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
+              Verified
+            </Badge>
           </div>
         </CardHeader>
         
