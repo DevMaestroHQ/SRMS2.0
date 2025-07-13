@@ -5,7 +5,7 @@ import path from "path";
 export interface OCRResult {
   name: string;
   tuRegd: string;
-  marks: string;
+  result: string;
 }
 
 export class OCRService {
@@ -104,7 +104,7 @@ export class OCRService {
     return {
       name: name || "Name not found",
       tuRegd: tuRegd || "Registration not found", 
-      marks: "Not applicable" // Since we're only extracting name and registration
+      result: "Passed" // Default result since we're only extracting name and registration
     };
   }
 }

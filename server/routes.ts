@@ -161,7 +161,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const studentRecord = await storage.createStudentRecord({
             name: ocrResult.name,
             tuRegd: ocrResult.tuRegd,
-            marks: ocrResult.marks,
+            result: ocrResult.result,
             imagePath: file.path,
             pdfPath: pdfPath,
             uploadedBy: req.admin!.id,

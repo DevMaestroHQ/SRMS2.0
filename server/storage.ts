@@ -28,6 +28,9 @@ export class MemStorage implements IStorage {
     
     // Create default admin
     this.initializeDefaultAdmin();
+    
+    // Add sample student records
+    this.addSampleData();
   }
 
   private async initializeDefaultAdmin() {
@@ -40,6 +43,46 @@ export class MemStorage implements IStorage {
       createdAt: new Date(),
     };
     this.admins.set(defaultAdmin.id, defaultAdmin);
+  }
+
+  private addSampleData() {
+    // Add sample student records for testing
+    const sampleRecords = [
+      {
+        id: this.currentRecordId++,
+        name: "John Doe",
+        tuRegd: "12345678",
+        result: "Passed",
+        imagePath: "/sample/path1.jpg",
+        pdfPath: "/sample/path1.pdf",
+        uploadedAt: new Date(),
+        uploadedBy: 1,
+      },
+      {
+        id: this.currentRecordId++,
+        name: "Jane Smith",
+        tuRegd: "87654321",
+        result: "Failed",
+        imagePath: "/sample/path2.jpg",
+        pdfPath: "/sample/path2.pdf",
+        uploadedAt: new Date(),
+        uploadedBy: 1,
+      },
+      {
+        id: this.currentRecordId++,
+        name: "Alice Johnson",
+        tuRegd: "11111111",
+        result: "Passed",
+        imagePath: "/sample/path3.jpg",
+        pdfPath: "/sample/path3.pdf",
+        uploadedAt: new Date(),
+        uploadedBy: 1,
+      },
+    ];
+
+    sampleRecords.forEach(record => {
+      this.studentRecords.set(record.id, record);
+    });
   }
 
   async getAdminByEmail(email: string): Promise<Admin | undefined> {

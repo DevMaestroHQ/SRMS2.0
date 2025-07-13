@@ -14,7 +14,7 @@ export const studentRecords = pgTable("student_records", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   tuRegd: text("tu_regd").notNull(),
-  marks: text("marks").notNull(),
+  result: text("result").notNull(), // "Passed" or "Failed"
   imagePath: text("image_path").notNull(),
   pdfPath: text("pdf_path").notNull(),
   uploadedAt: timestamp("uploaded_at").defaultNow().notNull(),

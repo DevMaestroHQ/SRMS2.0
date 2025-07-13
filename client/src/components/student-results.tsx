@@ -1,4 +1,4 @@
-import { Download, Eye, CheckCircle, Calendar, User, Hash, Award } from "lucide-react";
+import { Download, Eye, CheckCircle, User, Hash, Award, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,8 +9,7 @@ interface StudentResultsProps {
     id: number;
     name: string;
     tuRegd: string;
-    marks: string;
-    uploadedAt: string;
+    result: string; // "Passed" or "Failed"
   };
 }
 
@@ -120,25 +119,17 @@ export default function StudentResults({ result }: StudentResultsProps) {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-purple-500 rounded-lg flex items-center justify-center">
-                        <Award className="h-5 w-5 text-white" />
+                        <Shield className="h-5 w-5 text-white" />
                       </div>
-                      <span className="text-muted-foreground font-bold text-lg">Marks:</span>
+                      <span className="text-muted-foreground font-bold text-lg">Result:</span>
                     </div>
-                    <span className="font-bold text-green-600 text-2xl">{result.marks}</span>
-                  </div>
-                </div>
-                
-                <div className="p-6 bg-gradient-to-r from-white to-gray-50 dark:from-card dark:to-card/50 rounded-2xl border-2 border-orange-200 dark:border-orange-500/20 shadow-lg">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center">
-                        <Calendar className="h-5 w-5 text-white" />
-                      </div>
-                      <span className="text-muted-foreground font-bold text-lg">Upload Date:</span>
+                    <div className={`px-6 py-3 rounded-2xl font-bold text-xl ${
+                      result.result === "Passed" 
+                        ? "bg-gradient-to-r from-green-500 to-blue-500 text-white" 
+                        : "bg-gradient-to-r from-red-500 to-orange-500 text-white"
+                    }`}>
+                      {result.result}
                     </div>
-                    <span className="font-bold text-foreground text-xl">
-                      {new Date(result.uploadedAt).toLocaleDateString()}
-                    </span>
                   </div>
                 </div>
               </div>
