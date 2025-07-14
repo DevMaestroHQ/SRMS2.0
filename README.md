@@ -75,162 +75,240 @@ This comprehensive system provides a robust solution for university result manag
 1. **Clone and Setup**
    ```bash
    git clone <repository-url>
-   cd university-result-system
+   cd university-result-management
    npm install
    ```
 
-2. **Database Configuration**
+2. **Configure Environment Variables**
    ```bash
-   # Set up your DATABASE_URL environment variable
-   echo "DATABASE_URL=your_postgresql_connection_string" > .env
-   
-   # Initialize the database schema
+   cp .env.example .env
+   # Edit .env with your database URL and other settings
+   ```
+
+3. **Database Setup**
+   ```bash
    npm run db:push
    ```
 
-3. **Start Development Server**
+4. **Start Development Server**
    ```bash
    npm run dev
    ```
 
-4. **Access the Application**
-   - Student Portal: `http://localhost:5000`
-   - Admin Login: Click "Admin Portal" in navigation
+The application will be available at `http://localhost:5000`
 
-## 🔐 Admin Credentials
+## 🔐 Default Admin Credentials
 
-### Default Admin Account
+For initial setup, use these credentials:
 - **Email**: `admin@university.edu`
 - **Password**: `admin123`
 
-### Admin Management Features
-- **Profile Management**: Update name, email, and personal information
-- **Security Controls**: Change passwords with current password verification
-- **User Management**: Create new administrator accounts
-- **Activity Monitoring**: Track all system activities with timestamps
+⚠️ **Important**: Change these credentials immediately after first login through the Admin Management section.
+
+## 🚀 Production Deployment
+
+### Environment Variables
+
+Create a `.env` file with the following variables:
+
+```env
+# Database Configuration
+DATABASE_URL=postgresql://username:password@localhost:5432/database_name
+
+# JWT Secret for Authentication
+JWT_SECRET=your-super-secret-jwt-key-here-use-a-strong-random-string
+
+# Admin Configuration (Optional - for production deployment)
+ADMIN_EMAIL=admin@university.edu
+ADMIN_PASSWORD=your-secure-admin-password
+ADMIN_NAME=System Administrator
+
+# Application Configuration
+NODE_ENV=production
+PORT=5000
+
+# File Upload Configuration
+MAX_FILE_SIZE=52428800
+MAX_FILES=50
+
+# Session Configuration
+SESSION_SECRET=your-session-secret-key-here
+```
+
+### Deployment Options
+
+#### 1. Replit (Recommended)
+- Configure environment variables in Replit Secrets
+- Click "Deploy" button for automatic deployment
+- Supports auto-scaling and custom domains
+
+#### 2. Docker
+```bash
+# Build and run with Docker Compose
+docker-compose up -d
+
+# Or build manually
+docker build -t university-results .
+docker run -p 5000:5000 university-results
+```
+
+#### 3. Netlify
+- Connect repository to Netlify
+- Configure build settings: `npm run build`
+- Set publish directory: `dist/public`
+- Add environment variables in Netlify dashboard
+
+#### 4. Vercel
+```bash
+npm install -g vercel
+vercel --prod
+```
+
+#### 5. Traditional VPS
+```bash
+# Install dependencies
+sudo apt update
+sudo apt install nodejs npm postgresql nginx
+
+# Deploy application
+npm install
+npm run build
+npm start
+
+# Configure Nginx (see nginx.conf)
+sudo systemctl restart nginx
+```
+
+## 📡 API Endpoints
+
+### Public Endpoints
+- `GET /api/health` - Health check endpoint
+- `POST /api/get-result` - Search student results
+- `GET /api/download/:id` - Download student PDF
+- `GET /api/preview/:id` - Preview student PDF
+
+### Admin Endpoints
+- `POST /api/admin/login` - Admin authentication
+- `GET /api/admin/verify` - Verify admin token
+- `POST /api/admin/upload` - Upload student records
+- `GET /api/admin/records` - Get all student records
+- `POST /api/admin/register` - Register new admin
+- `POST /api/admin/change-password` - Change admin password
+- `POST /api/admin/update-profile` - Update admin profile
+
+## 📁 Project Structure
+
+```
+├── client/               # React frontend
+│   ├── src/
+│   │   ├── components/   # React components
+│   │   ├── pages/        # Page components
+│   │   ├── lib/          # Utility functions
+│   │   └── hooks/        # Custom hooks
+├── server/               # Express backend
+│   ├── routes.ts         # API routes
+│   ├── storage.ts        # Database operations
+│   ├── services/         # Business logic
+│   └── middleware/       # Express middleware
+├── shared/               # Shared types and schemas
+├── uploads/              # File storage directory
+├── netlify.toml          # Netlify configuration
+├── vercel.json           # Vercel configuration
+├── Dockerfile            # Docker configuration
+├── docker-compose.yml    # Docker Compose setup
+├── nginx.conf            # Nginx configuration
+└── PRODUCTION_SETUP.md   # Detailed deployment guide
+```
+
+## 🛡️ Security Features
+
+- JWT-based authentication with secure token management
+- Password hashing with bcrypt (12 rounds)
+- CORS protection with configurable origins
+- Rate limiting for API endpoints
+- File type validation and size limits
+- SQL injection prevention with parameterized queries
+- XSS protection headers
+- HTTPS enforcement in production
+- Session management with secure cookies
+- Input sanitization and validation
+
+## ⚡ Performance Optimizations
+
+- Database connection pooling
+- Image optimization with Sharp
+- Gzip compression for static assets
+- Static file caching with proper headers
+- Bundle optimization and tree shaking
+- Lazy loading for React components
+- Efficient SQL queries with indexes
+- Memory management for file processing
+
+## 📊 Monitoring and Health Checks
+
+### Health Endpoints
+- `/api/health` - Application health status
+- Database connectivity verification
+- File system health checks
+- Memory usage monitoring
+
+### Available Scripts
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run db:push` - Push database schema changes
+- `npm run check` - Type checking
 
 ## 🗄️ Database Schema
 
-### Core Tables
-- **Admins**: Administrator accounts with secure authentication
-- **Semesters**: Academic term management with active semester tracking
-- **Student Records**: Academic results linked to semesters and administrators
-- **File Uploads**: Metadata for processed files with semester associations
+The application uses PostgreSQL with the following main tables:
+- `admins` - Administrator accounts with secure authentication
+- `semesters` - Academic semesters with active status management
+- `student_records` - Student academic records with comprehensive metadata
+- `file_uploads` - File upload tracking and management
 
-### Enhanced Features
-- **Persistent Storage**: No data loss on application restarts
-- **Semester Organization**: Complete academic term management
-- **Admin Relationships**: Track which admin uploaded which records
-- **File Metadata**: Comprehensive tracking of uploaded and processed files
+## 💾 File Storage
 
-## 📁 File Processing Capabilities
+- Uploaded images stored in `uploads/` directory
+- Generated PDFs stored in `pdfs/` directory
+- Proper file permissions and disk space management
+- Consider CDN integration for production scalability
 
-### Enhanced Upload Limits (2025)
-- **File Quantity**: Up to 50 files per upload (increased from 10)
-- **File Size**: 50MB maximum per file (increased from 5MB)
-- **Supported Formats**: JPG, PNG, PDF (expanded from JPG-only)
-- **Semester Selection**: Optional semester assignment for uploads
+## 🔧 Development
 
-### OCR Processing
-- **Real-time Text Extraction**: Automatic processing with progress tracking
-- **Multi-format Support**: Enhanced processing for various file types
-- **Error Handling**: Comprehensive error reporting with retry capabilities
-- **Data Extraction**: Student name, registration number, and result status
+### Contributing
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-## 🚦 API Endpoints
+### Code Style
+- TypeScript with strict type checking
+- ESLint and Prettier for code formatting
+- Consistent naming conventions
+- Comprehensive error handling
 
-### Public Endpoints
-- `POST /api/search` - Search student records
-- `GET /api/download/:id` - Download result PDFs
+## 📄 License
 
-### Admin Endpoints (Protected)
-- `POST /api/admin/login` - Admin authentication
-- `GET /api/admin/verify` - Token verification
-- `POST /api/admin/upload` - Enhanced file upload (50 files, multi-format)
-- `GET /api/admin/semesters` - Semester management
-- `POST /api/admin/semesters` - Create new semester
-- `PUT /api/admin/semesters/:id` - Update semester
-- `DELETE /api/admin/semesters/:id` - Delete semester
-- `POST /api/admin/change-password` - Security management
-- `POST /api/admin/update-profile` - Profile management
-- `POST /api/admin/register` - User management
+This project is licensed under the MIT License.
 
-## 🎨 UI/UX Features
+## 🆘 Support
 
-### Modern Design System
-- **Glass-morphism Effects**: Backdrop blur and translucent elements
-- **Responsive Layout**: Mobile-first design with tablet and desktop optimization
-- **Dark/Light Themes**: Complete theming system with user preferences
-- **Clean Navigation**: Sticky header with university branding
-- **Professional Forms**: Password visibility toggles and validation feedback
+For technical support, deployment assistance, or questions:
+- Check `PRODUCTION_SETUP.md` for detailed deployment instructions
+- Review the troubleshooting section in the production guide
+- Contact the development team for custom deployment support
 
-### Enhanced Admin Interface
-- **Tabbed Layout**: Organized interface eliminating repetition
-- **File Upload Zone**: Drag-and-drop with capacity indicators
-- **Activity Timeline**: Color-coded badges with scrollable interface
-- **Semester Selection**: Dropdown with active semester highlighting
+## 🚀 Quick Production Checklist
 
-## 🚀 Deployment
-
-### Development
-```bash
-npm run dev
-```
-
-### Production Build
-```bash
-npm run build
-npm start
-```
-
-### Environment Variables
-```bash
-# Required
-DATABASE_URL=your_postgresql_connection_string
-
-# Optional Production Settings
-ADMIN_EMAIL=custom_admin@domain.com
-ADMIN_PASSWORD=secure_password
-ADMIN_NAME=Custom Admin Name
-```
-
-## 📈 Performance Optimizations
-
-### Recent Improvements (2025)
-- **Removed Unused Components**: Eliminated 25+ unused UI components for faster builds
-- **Database Migration**: PostgreSQL for persistent storage and better performance
-- **Enhanced File Processing**: 10x increase in file capacity with improved error handling
-- **Optimized Bundle**: Reduced JavaScript bundle size by removing unnecessary dependencies
-- **Clean Architecture**: Removed repetitive code and improved component structure
-
-## 🔒 Security Features
-
-- **JWT Authentication**: Secure token-based admin access
-- **Password Hashing**: bcrypt encryption for all passwords
-- **File Validation**: Comprehensive file type and size checking
-- **CORS Protection**: Configured for secure cross-origin requests
-- **Input Sanitization**: Zod validation for all user inputs
-- **Session Management**: Secure session handling with automatic logout
-
-## 🐛 Troubleshooting
-
-### Common Issues
-1. **Database Connection**: Ensure DATABASE_URL is correctly set
-2. **File Upload Limits**: Check server file size limits (50MB max)
-3. **OCR Processing**: Ensure supported file formats (JPG, PNG, PDF)
-4. **Admin Access**: Verify credentials and check authentication status
-
-### Development Commands
-```bash
-npm run db:push      # Update database schema
-npm run dev         # Start development server
-npm run build       # Build for production
-```
-
-## 📞 Support
-
-For technical support or feature requests, please refer to the admin dashboard activity tracker for system monitoring and diagnostics.
-
----
-
-**University Result Management System** - Built with modern web technologies for enterprise-grade academic record management.
+- [ ] Strong JWT and session secrets (32+ characters)
+- [ ] Secure database credentials
+- [ ] HTTPS certificate configured
+- [ ] Rate limiting enabled
+- [ ] File upload size limits set
+- [ ] Security headers configured
+- [ ] Database connection pooling enabled
+- [ ] Log monitoring setup
+- [ ] Backup strategy implemented
+- [ ] Admin credentials changed from defaults

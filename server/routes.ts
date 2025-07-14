@@ -84,6 +84,26 @@ const upload = multer({
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check endpoint
+  app.get("/api/health", async (req, res) => {
+    try {
+      // Check database connectivity
+      await storage.getAllAdmins();
+      res.status(200).json({ 
+        status: "healthy",
+        timestamp: new Date().toISOString(),
+        version: "1.0.0",
+        database: "connected"
+      });
+    } catch (error) {
+      res.status(503).json({ 
+        status: "unhealthy",
+        timestamp: new Date().toISOString(),
+        error: "Database connection failed"
+      });
+    }
+  });
+
   // Admin login
   app.post("/api/admin/login", async (req, res) => {
     try {
