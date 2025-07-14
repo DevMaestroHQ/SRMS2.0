@@ -98,19 +98,6 @@ export default function AdminManagement() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
-      {/* Header */}
-      <div className="text-center space-y-3">
-        <div className="flex justify-center">
-          <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-3 rounded-full">
-            <Shield className="h-8 w-8 text-white" />
-          </div>
-        </div>
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Admin Management</h2>
-        <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto">
-          Comprehensive admin control panel for user management and security
-        </p>
-      </div>
-
       {/* Tabs Interface */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-3 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
