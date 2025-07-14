@@ -9,7 +9,7 @@ import { storage } from "./storage";
 import { AuthService } from "./services/auth";
 import { OCRService } from "./services/ocr";
 import { authenticateAdmin, type AuthenticatedRequest } from "./middleware/auth";
-import { loginSchema, studentSearchSchema, insertStudentRecordSchema, adminRegistrationSchema, changePasswordSchema, insertSemesterSchema, updateProfileSchema } from "@shared/schema";
+import { loginSchema, studentSearchSchema, insertStudentRecordSchema, changePasswordSchema, insertSemesterSchema, updateProfileSchema } from "@shared/schema";
 
 // Configure multer for file uploads
 const uploadsDir = path.join(process.cwd(), "uploads");

@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { 
-  User, Mail, Eye, EyeOff, Lock, Settings, UserPlus, Save, X, Edit3
+  User, Mail, Eye, EyeOff, Lock, Settings, Save, X, Edit3
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -11,26 +11,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import type { AdminRegistration, ChangePassword, UpdateProfile } from "@shared/schema";
-import { adminRegistrationSchema, changePasswordSchema, updateProfileSchema } from "@shared/schema";
+import { authManager } from "@/lib/auth";
+import type { ChangePassword, UpdateProfile } from "@shared/schema";
+import { changePasswordSchema, updateProfileSchema } from "@shared/schema";
 
 export default function AdminManagement() {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
-  const [activeSection, setActiveSection] = useState<string | null>(null);
   const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
   const [isProfileEditing, setIsProfileEditing] = useState(false);
+  const [isPasswordEditing, setIsPasswordEditing] = useState(false);
 
   const togglePassword = (field: string) => {
     setShowPasswords(prev => ({ ...prev, [field]: !prev[field] }));
   };
 
-  // Form configurations
-  const registerForm = useForm<AdminRegistration>({
-    resolver: zodResolver(adminRegistrationSchema),
-    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
-  });
+  // Get current admin info
+  const currentAdmin = authManager.getAuthState().admin;
 
+  // Form configurations
   const passwordForm = useForm<ChangePassword>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: { currentPassword: "", newPassword: "", confirmPassword: "" },
@@ -38,35 +36,21 @@ export default function AdminManagement() {
 
   const profileForm = useForm<UpdateProfile>({
     resolver: zodResolver(updateProfileSchema),
-    defaultValues: { name: "", email: "", currentPassword: "" },
+    defaultValues: { 
+      name: currentAdmin?.name || "", 
+      email: currentAdmin?.email || "", 
+      currentPassword: "" 
+    },
   });
 
   // Mutations
-  const registerMutation = useMutation({
-    mutationFn: (data: AdminRegistration) => 
-      apiRequest("/api/admin/register", { method: "POST", body: data }),
-    onSuccess: () => {
-      toast({ title: "Admin Created", description: "New admin user has been created successfully." });
-      registerForm.reset();
-      setActiveSection(null);
-      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Registration Failed",
-        description: error.message || "Failed to create admin user.",
-        variant: "destructive",
-      });
-    },
-  });
-
   const changePasswordMutation = useMutation({
     mutationFn: (data: ChangePassword) => 
       apiRequest("/api/admin/change-password", { method: "POST", body: data }),
     onSuccess: () => {
       toast({ title: "Password Changed", description: "Your password has been updated successfully." });
       passwordForm.reset();
-      setActiveSection(null);
+      setIsPasswordEditing(false);
     },
     onError: (error: any) => {
       toast({
@@ -95,13 +79,8 @@ export default function AdminManagement() {
   });
 
   // Form handlers
-  const onRegisterSubmit = (data: AdminRegistration) => registerMutation.mutate(data);
   const onPasswordSubmit = (data: ChangePassword) => changePasswordMutation.mutate(data);
   const onProfileSubmit = (data: UpdateProfile) => updateProfileMutation.mutate(data);
-
-  const toggleSection = (section: string) => {
-    setActiveSection(activeSection === section ? null : section);
-  };
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -270,7 +249,7 @@ export default function AdminManagement() {
             </div>
           </CardHeader>
           <CardContent className="p-6">
-            {activeSection !== 'security' ? (
+            {!isPasswordEditing ? (
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
@@ -283,7 +262,7 @@ export default function AdminManagement() {
                   </div>
                 </div>
                 <Button 
-                  onClick={() => toggleSection('security')}
+                  onClick={() => setIsPasswordEditing(true)}
                   className="bg-green-600 hover:bg-green-700 text-white"
                 >
                   <Lock className="h-4 w-4 mr-2" />
@@ -393,7 +372,7 @@ export default function AdminManagement() {
                       type="button"
                       variant="outline"
                       onClick={() => {
-                        toggleSection('security');
+                        setIsPasswordEditing(false);
                         passwordForm.reset();
                       }}
                     >
@@ -406,161 +385,7 @@ export default function AdminManagement() {
           </CardContent>
         </Card>
 
-        {/* User Management */}
-        <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-          <CardHeader className="border-b border-slate-200 dark:border-slate-700">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
-                  <UserPlus className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                </div>
-                <div>
-                  <CardTitle className="text-lg font-medium text-slate-900 dark:text-white">
-                    User Management
-                  </CardTitle>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                    Create new administrators
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="p-6">
-            {activeSection !== 'users' ? (
-              <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <span className="text-slate-500 dark:text-slate-400">Total Admins</span>
-                    <p className="font-medium text-slate-900 dark:text-white">1 Active</p>
-                  </div>
-                  <div>
-                    <span className="text-slate-500 dark:text-slate-400">Permissions</span>
-                    <p className="font-medium text-slate-900 dark:text-white">Full Access</p>
-                  </div>
-                </div>
-                <Button 
-                  onClick={() => toggleSection('users')}
-                  className="bg-purple-600 hover:bg-purple-700 text-white"
-                >
-                  <UserPlus className="h-4 w-4 mr-2" />
-                  Create Admin
-                </Button>
-              </div>
-            ) : (
-              <Form {...registerForm}>
-                <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
-                  <FormField
-                    control={registerForm.control}
-                    name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                          <Input {...field} placeholder="Enter full name" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={registerForm.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email Address</FormLabel>
-                        <FormControl>
-                          <Input {...field} type="email" placeholder="Enter email address" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={registerForm.control}
-                    name="password"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input 
-                              {...field} 
-                              type={showPasswords.register ? "text" : "password"} 
-                              placeholder="Enter password" 
-                            />
-                            <button
-                              type="button"
-                              onClick={() => togglePassword('register')}
-                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                            >
-                              {showPasswords.register ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                            </button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={registerForm.control}
-                    name="confirmPassword"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Confirm Password</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Input 
-                              {...field} 
-                              type={showPasswords.registerConfirm ? "text" : "password"} 
-                              placeholder="Confirm password" 
-                            />
-                            <button
-                              type="button"
-                              onClick={() => togglePassword('registerConfirm')}
-                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                            >
-                              {showPasswords.registerConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                            </button>
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="flex space-x-2">
-                    <Button 
-                      type="submit" 
-                      disabled={registerMutation.isPending}
-                      className="flex-1 bg-purple-600 hover:bg-purple-700"
-                    >
-                      {registerMutation.isPending ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
-                          Creating...
-                        </>
-                      ) : (
-                        <>
-                          <UserPlus className="h-4 w-4 mr-2" />
-                          Create Admin
-                        </>
-                      )}
-                    </Button>
-                    <Button 
-                      type="button"
-                      variant="outline"
-                      onClick={() => {
-                        toggleSection('users');
-                        registerForm.reset();
-                      }}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </form>
-              </Form>
-            )}
-          </CardContent>
-        </Card>
+
       </div>
     </div>
   );
