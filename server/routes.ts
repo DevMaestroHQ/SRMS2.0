@@ -166,36 +166,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create new admin user
-  app.post("/api/admin/users", authenticateAdmin, async (req, res) => {
-    try {
-      const { name, email, password } = adminRegistrationSchema.parse(req.body);
-      
-      // Check if admin with this email already exists
-      const existingAdmin = await storage.getAdminByEmail(email);
-      if (existingAdmin) {
-        return res.status(400).json({ message: "An administrator with this email already exists" });
-      }
-      
-      const newAdmin = await storage.createAdmin({ name, email, password });
-      
-      res.json({
-        message: "Administrator created successfully",
-        admin: {
-          id: newAdmin.id,
-          name: newAdmin.name,
-          email: newAdmin.email,
-          createdAt: newAdmin.createdAt,
-        },
-      });
-    } catch (error) {
-      if (error instanceof Error && error.message.includes("validation")) {
-        res.status(400).json({ message: "Invalid registration data" });
-      } else {
-        res.status(500).json({ message: "Failed to create administrator" });
-      }
-    }
-  });
+  // Admin user creation route removed - not needed in this version
 
   // Change admin password
   app.post("/api/admin/change-password", authenticateAdmin, async (req: AuthenticatedRequest, res) => {
@@ -562,6 +533,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "No matching record found" });
       }
 
+      // Log successful search for analytics
+      console.log(`Student search: ${name} (${tuRegd}) - Found`);
+
       res.json({
         id: record.id,
         name: record.name,
@@ -569,6 +543,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         result: record.result,
       });
     } catch (error) {
+      console.error("Student search error:", error);
       res.status(400).json({ message: "Invalid search parameters" });
     }
   });
@@ -587,11 +562,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Set proper headers for image preview
       res.setHeader('Content-Type', 'image/jpeg');
       res.setHeader('Cache-Control', 'public, max-age=31536000');
+      res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
       
       // Stream the image file
       const imageStream = fs.createReadStream(record.imagePath);
+      imageStream.on('error', (err) => {
+        console.error('Image stream error:', err);
+        res.status(500).json({ message: "Failed to load image" });
+      });
       imageStream.pipe(res);
     } catch (error) {
+      console.error("Preview error:", error);
       res.status(500).json({ message: "Preview failed" });
     }
   });

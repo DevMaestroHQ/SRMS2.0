@@ -73,6 +73,7 @@ export default function FileUpload() {
       toast({
         title: "Upload Complete",
         description: `${successCount} files processed successfully${failCount > 0 ? `, ${failCount} failed` : ''}.`,
+        variant: failCount > 0 ? "destructive" : "default",
       });
       
       queryClient.invalidateQueries({ queryKey: ["/api/admin/records"] });

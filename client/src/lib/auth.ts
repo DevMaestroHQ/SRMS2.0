@@ -78,6 +78,13 @@ class AuthManager {
     return false;
   }
 
+  updateAuthState(admin: { id: number; email: string; name: string }): void {
+    this.authState = {
+      ...this.authState,
+      admin,
+    };
+  }
+
   logout(): void {
     this.authState = {
       isAuthenticated: false,

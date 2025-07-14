@@ -31,6 +31,7 @@ export default function StudentSearch({ onResultFound }: StudentSearchProps) {
       return apiRequest(`/api/get-result`, {
         method: "POST",
         body: searchData,
+        headers: { "Content-Type": "application/json" },
       });
     },
     onSuccess: (data) => {
@@ -72,7 +73,7 @@ export default function StudentSearch({ onResultFound }: StudentSearchProps) {
                       <Input 
                         {...field} 
                         placeholder="Enter your complete name"
-                        className="pl-10 h-11 sm:h-12 text-base border border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md bg-white dark:bg-slate-800"
+                        className="pl-10 h-11 sm:h-12 text-base border border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md bg-white dark:bg-slate-800 transition-colors"
                       />
                     </div>
                   </FormControl>

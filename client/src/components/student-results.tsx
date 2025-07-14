@@ -20,14 +20,15 @@ export default function StudentResults({ result }: StudentResultsProps) {
     try {
       const response = await fetch(`/api/download/${result.id}`);
       if (!response.ok) {
-        throw new Error("Download failed");
+        const errorText = await response.text();
+        throw new Error(errorText || "Download failed");
       }
       
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${result.name}_${result.tuRegd}.pdf`;
+      a.download = `${result.name.replace(/\s+/g, '_')}_${result.tuRegd}.pdf`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
@@ -38,16 +39,33 @@ export default function StudentResults({ result }: StudentResultsProps) {
         description: "Your marksheet PDF is being downloaded.",
       });
     } catch (error) {
+      console.error("Download error:", error);
       toast({
         title: "Download Failed",
-        description: "Failed to download the marksheet. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to download the marksheet. Please try again.",
         variant: "destructive",
       });
     }
   };
 
   const handlePreview = () => {
-    window.open(`/api/preview/${result.id}`, "_blank");
+    try {
+      const previewWindow = window.open(`/api/preview/${result.id}`, "_blank");
+      if (!previewWindow) {
+        toast({
+          title: "Preview Blocked",
+          description: "Please allow popups for this site to view the preview.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Preview error:", error);
+      toast({
+        title: "Preview Failed",
+        description: "Failed to open preview. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

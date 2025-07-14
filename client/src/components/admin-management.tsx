@@ -72,10 +72,12 @@ export default function AdminManagement() {
         body: data, 
         headers: authManager.getAuthHeaders() 
       }),
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({ title: "Profile Updated", description: "Your profile has been updated successfully." });
       profileForm.reset();
       setIsProfileEditing(false);
+      // Update the auth state with new profile info
+      authManager.updateAuthState(data.admin);
     },
     onError: (error: any) => {
       toast({

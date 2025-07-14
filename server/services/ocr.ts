@@ -26,8 +26,8 @@ export class OCRService {
         // Configure worker for better accuracy
         await worker.setParameters({
           tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 -+/:.,()[]',
-          tessedit_pageseg_mode: '1', // Auto with OSD
-          tessedit_ocr_engine_mode: '1', // LSTM only
+          tessedit_pageseg_mode: '6', // Uniform block of text
+          tessedit_ocr_engine_mode: '3', // Default, based on what is available
         });
 
         const { data: { text } } = await worker.recognize(imageBuffer);
