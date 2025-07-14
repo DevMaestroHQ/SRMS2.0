@@ -9,7 +9,7 @@ import { storage } from "./storage";
 import { AuthService } from "./services/auth";
 import { OCRService } from "./services/ocr";
 import { authenticateAdmin, type AuthenticatedRequest } from "./middleware/auth";
-import { loginSchema, studentSearchSchema, insertStudentRecordSchema } from "@shared/schema";
+import { loginSchema, studentSearchSchema, insertStudentRecordSchema, adminRegistrationSchema, changePasswordSchema } from "@shared/schema";
 
 // Configure multer for file uploads
 const uploadsDir = path.join(process.cwd(), "uploads");
@@ -126,6 +126,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
         name: admin.name,
       },
     });
+  });
+
+  // Get all admin users
+  app.get("/api/admin/users", authenticateAdmin, async (req, res) => {
+    try {
+      const admins = await storage.getAllAdmins();
+      const sanitizedAdmins = admins.map(admin => ({
+        id: admin.id,
+        name: admin.name,
+        email: admin.email,
+        createdAt: admin.createdAt,
+      }));
+      res.json(sanitizedAdmins);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch administrators" });
+    }
+  });
+
+  // Create new admin user
+  app.post("/api/admin/users", authenticateAdmin, async (req, res) => {
+    try {
+      const { name, email, password } = adminRegistrationSchema.parse(req.body);
+      
+      // Check if admin with this email already exists
+      const existingAdmin = await storage.getAdminByEmail(email);
+      if (existingAdmin) {
+        return res.status(400).json({ message: "An administrator with this email already exists" });
+      }
+      
+      const newAdmin = await storage.createAdmin({ name, email, password });
+      
+      res.json({
+        message: "Administrator created successfully",
+        admin: {
+          id: newAdmin.id,
+          name: newAdmin.name,
+          email: newAdmin.email,
+          createdAt: newAdmin.createdAt,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("validation")) {
+        res.status(400).json({ message: "Invalid registration data" });
+      } else {
+        res.status(500).json({ message: "Failed to create administrator" });
+      }
+    }
+  });
+
+  // Change admin password
+  app.post("/api/admin/change-password", authenticateAdmin, async (req: AuthenticatedRequest, res) => {
+    try {
+      const { currentPassword, newPassword } = changePasswordSchema.parse(req.body);
+      
+      // Get current admin
+      const admin = await storage.getAdminById(req.admin!.id);
+      if (!admin) {
+        return res.status(401).json({ message: "Admin not found" });
+      }
+      
+      // Verify current password
+      const isValidPassword = await AuthService.verifyPassword(currentPassword, admin.password);
+      if (!isValidPassword) {
+        return res.status(400).json({ message: "Current password is incorrect" });
+      }
+      
+      // Update password
+      await storage.updateAdminPassword(admin.id, newPassword);
+      
+      res.json({ message: "Password updated successfully" });
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("validation")) {
+        res.status(400).json({ message: "Invalid password data" });
+      } else {
+        res.status(500).json({ message: "Failed to update password" });
+      }
+    }
+  });
+
+  // Delete admin user
+  app.delete("/api/admin/users/:id", authenticateAdmin, async (req: AuthenticatedRequest, res) => {
+    try {
+      const adminId = parseInt(req.params.id);
+      
+      // Prevent self-deletion
+      if (adminId === req.admin!.id) {
+        return res.status(400).json({ message: "You cannot delete your own account" });
+      }
+      
+      await storage.deleteAdmin(adminId);
+      res.json({ message: "Administrator deleted successfully" });
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("Cannot delete the last admin")) {
+        res.status(400).json({ message: "Cannot delete the last administrator account" });
+      } else if (error instanceof Error && error.message.includes("not found")) {
+        res.status(404).json({ message: "Administrator not found" });
+      } else {
+        res.status(500).json({ message: "Failed to delete administrator" });
+      }
+    }
   });
 
   // Upload and process student images

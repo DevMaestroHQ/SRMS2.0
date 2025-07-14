@@ -6,6 +6,9 @@ export interface IStorage {
   getAdminByEmail(email: string): Promise<Admin | undefined>;
   getAdminById(id: number): Promise<Admin | undefined>;
   createAdmin(admin: InsertAdmin): Promise<Admin>;
+  getAllAdmins(): Promise<Admin[]>;
+  updateAdminPassword(adminId: number, newPassword: string): Promise<void>;
+  deleteAdmin(adminId: number): Promise<void>;
   
   // Student record operations
   createStudentRecord(record: InsertStudentRecord): Promise<StudentRecord>;
@@ -140,6 +143,34 @@ export class MemStorage implements IStorage {
 
   async deleteAllStudentRecords(): Promise<void> {
     this.studentRecords.clear();
+  }
+
+  async getAllAdmins(): Promise<Admin[]> {
+    return Array.from(this.admins.values()).sort((a, b) => 
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  }
+
+  async updateAdminPassword(adminId: number, newPassword: string): Promise<void> {
+    const admin = this.admins.get(adminId);
+    if (admin) {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      admin.password = hashedPassword;
+      this.admins.set(adminId, admin);
+    } else {
+      throw new Error("Admin not found");
+    }
+  }
+
+  async deleteAdmin(adminId: number): Promise<void> {
+    const totalAdmins = this.admins.size;
+    if (totalAdmins <= 1) {
+      throw new Error("Cannot delete the last admin account");
+    }
+    const deleted = this.admins.delete(adminId);
+    if (!deleted) {
+      throw new Error("Admin not found");
+    }
   }
 }
 

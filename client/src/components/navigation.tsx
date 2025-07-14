@@ -34,77 +34,66 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/95 dark:bg-card/95 backdrop-blur-lg border-b border-border/50 shadow-material-1">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16 lg:h-20">
-          {/* Logo Section */}
-          <div className="flex items-center space-x-3 animate-fade-in">
-            <div className="relative">
-              <div className="p-2 rounded-2xl shadow-material-2 animate-bounce-in bg-white/90 dark:bg-card/90 backdrop-blur-sm">
+    <nav className="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-b border-slate-200/50 dark:border-slate-700/50 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo and Title */}
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-xl bg-university-blue shadow-md flex items-center justify-center">
                 <img 
                   src={universityLogo} 
                   alt="Tribhuvan University Logo" 
-                  className="h-8 w-8 lg:h-10 lg:w-10 object-contain"
+                  className="h-6 w-6 object-contain"
                 />
               </div>
-              <div className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full animate-pulse" />
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="responsive-text-xl font-bold bg-gradient-to-r from-primary via-educational-purple to-educational-green bg-clip-text text-transparent">
-                Tribhuvan University
-              </h1>
-              <p className="text-xs text-muted-foreground flex items-center">
-                <BookOpen className="h-3 w-3 mr-1" />
-                Result Management System
-              </p>
-            </div>
-            <div className="sm:hidden">
-              <h1 className="text-lg font-bold bg-gradient-to-r from-primary to-educational-purple bg-clip-text text-transparent">
-                T.U. Results
-              </h1>
+              <div className="hidden sm:block">
+                <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                  Tribhuvan University
+                </h1>
+                <p className="text-xs text-university-gray dark:text-slate-400 -mt-1">
+                  <BookOpen className="inline h-3 w-3 mr-1" />
+                  Result Management System
+                </p>
+              </div>
+              <div className="sm:hidden">
+                <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                  T.U. Results
+                </h1>
+              </div>
             </div>
           </div>
-          
+
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <div className="flex items-center space-x-2 bg-muted/50 rounded-xl p-1">
-              <Button
-                variant={currentView === "student" ? "default" : "ghost"}
+          <div className="hidden md:flex items-center space-x-4">
+            <div className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+              <button
                 onClick={() => handleViewChange("student")}
-                size="sm"
-                className={`relative transition-all duration-300 ${
-                  currentView === "student" 
-                    ? "shadow-educational" 
-                    : "hover:bg-primary/10"
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
+                  currentView === "student"
+                    ? "bg-university-blue text-white shadow-md"
+                    : "text-university-gray dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-white dark:hover:bg-slate-700"
                 }`}
               >
-                <User className="h-4 w-4 mr-2" />
-                Student Portal
-                {currentView === "student" && (
-                  <div className="absolute -bottom-0.5 left-1/2 transform -translate-x-1/2 w-2 h-0.5 bg-primary rounded-full" />
-                )}
-              </Button>
-              <Button
-                variant={currentView === "admin" ? "default" : "ghost"}
+                <User className="h-4 w-4" />
+                <span>Student Portal</span>
+              </button>
+              <button
                 onClick={() => handleViewChange("admin")}
-                size="sm"
-                className={`relative transition-all duration-300 ${
-                  currentView === "admin" 
-                    ? "shadow-educational" 
-                    : "hover:bg-primary/10"
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 flex items-center space-x-2 ${
+                  currentView === "admin"
+                    ? "bg-university-navy text-white shadow-md"
+                    : "text-university-gray dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-white dark:hover:bg-slate-700"
                 }`}
               >
-                <Shield className="h-4 w-4 mr-2" />
-                Admin Panel
-                {currentView === "admin" && (
-                  <div className="absolute -bottom-0.5 left-1/2 transform -translate-x-1/2 w-2 h-0.5 bg-primary rounded-full" />
-                )}
-              </Button>
+                <Shield className="h-4 w-4" />
+                <span>Admin Panel</span>
+              </button>
             </div>
             
             {authState.isAuthenticated && (
-              <div className="flex items-center space-x-3 pl-4 border-l border-border/50">
-                <Badge variant="secondary" className="bg-success/10 text-success border-success/20">
+              <div className="flex items-center space-x-3 pl-4 border-l border-slate-200 dark:border-slate-700">
+                <Badge className="bg-academic-green/10 text-academic-green border-academic-green/20">
                   <Shield className="h-3 w-3 mr-1" />
                   {authState.admin?.name}
                 </Badge>
@@ -112,14 +101,14 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
                   variant="ghost"
                   size="sm"
                   onClick={handleLogout}
-                  className="text-destructive hover:text-destructive hover:bg-destructive/10 transition-colors"
+                  className="text-academic-red hover:text-academic-red hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Logout
                 </Button>
               </div>
             )}
-          </nav>
+          </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
@@ -140,29 +129,35 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-border/50 py-4 animate-slide-up">
+          <div className="md:hidden border-t border-slate-200 dark:border-slate-700 py-4 bg-white/95 dark:bg-slate-900/95">
             <div className="space-y-3">
-              <Button
-                variant={currentView === "student" ? "default" : "ghost"}
+              <button
                 onClick={() => handleViewChange("student")}
-                className="w-full justify-start"
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  currentView === "student"
+                    ? "bg-university-blue text-white"
+                    : "text-university-gray dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                }`}
               >
-                <User className="h-4 w-4 mr-2" />
-                Student Portal
-              </Button>
-              <Button
-                variant={currentView === "admin" ? "default" : "ghost"}
+                <User className="h-4 w-4" />
+                <span>Student Portal</span>
+              </button>
+              <button
                 onClick={() => handleViewChange("admin")}
-                className="w-full justify-start"
+                className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  currentView === "admin"
+                    ? "bg-university-navy text-white"
+                    : "text-university-gray dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
+                }`}
               >
-                <Shield className="h-4 w-4 mr-2" />
-                Admin Panel
-              </Button>
+                <Shield className="h-4 w-4" />
+                <span>Admin Panel</span>
+              </button>
               
               {authState.isAuthenticated && (
-                <div className="pt-3 border-t border-border/50 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <Badge variant="secondary" className="bg-success/10 text-success border-success/20">
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-700 space-y-2">
+                  <div className="flex items-center justify-between px-4">
+                    <Badge className="bg-academic-green/10 text-academic-green border-academic-green/20">
                       <Shield className="h-3 w-3 mr-1" />
                       {authState.admin?.name}
                     </Badge>
@@ -170,7 +165,7 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
                       variant="ghost"
                       size="sm"
                       onClick={handleLogout}
-                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                      className="text-academic-red hover:text-academic-red hover:bg-red-50 dark:hover:bg-red-900/20"
                     >
                       <LogOut className="h-4 w-4 mr-2" />
                       Logout
@@ -182,6 +177,6 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
           </div>
         )}
       </div>
-    </header>
+    </nav>
   );
 }
