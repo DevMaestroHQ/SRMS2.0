@@ -21,6 +21,22 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-secondary/20">
       <Navigation currentView={currentView} onViewChange={setCurrentView} />
       
+      {/* Logo at top of page */}
+      <div className="text-center py-4 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm border-b border-slate-200/50 dark:border-slate-700/50">
+        <div className="flex justify-center items-center space-x-3">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-blue-700 shadow-md flex items-center justify-center">
+            <img 
+              src={universityLogo} 
+              alt="Tribhuvan University Logo" 
+              className="h-5 w-5 object-contain"
+            />
+          </div>
+          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+            Nepal's Premier Educational Institution
+          </span>
+        </div>
+      </div>
+      
       {currentView === "student" && (
         <>
           {/* Hero Section */}
