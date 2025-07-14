@@ -1,12 +1,14 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { UserPlus, Settings, Lock, User, Mail, Eye, EyeOff } from "lucide-react";
+import { UserPlus, Settings, Lock, User, Mail, Eye, EyeOff, Shield, Users, CheckCircle } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { authManager } from "@/lib/auth";
 import { apiRequest } from "@/lib/queryClient";
@@ -16,22 +18,17 @@ import { adminRegistrationSchema, changePasswordSchema, updateProfileSchema } fr
 export default function AdminManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [showPasswords, setShowPasswords] = useState({
-    register: false,
-    changeOld: false,
-    changeNew: false,
-    changeConfirm: false,
-    profileCurrent: false,
-  });
+  const [activeTab, setActiveTab] = useState("profile");
+  const [showPasswords, setShowPasswords] = useState<Record<string, boolean>>({});
 
-  const togglePassword = (field: keyof typeof showPasswords) => {
+  const togglePassword = (field: string) => {
     setShowPasswords(prev => ({ ...prev, [field]: !prev[field] }));
   };
 
   // Form configurations
   const registerForm = useForm<AdminRegistration>({
     resolver: zodResolver(adminRegistrationSchema),
-    defaultValues: { name: "", email: "", password: "" },
+    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
   });
 
   const passwordForm = useForm<ChangePassword>({
@@ -100,363 +97,380 @@ export default function AdminManagement() {
   const onProfileSubmit = (data: UpdateProfile) => updateProfileMutation.mutate(data);
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-6xl mx-auto space-y-8">
       {/* Header */}
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Admin Management</h2>
-        <p className="text-slate-600 dark:text-slate-400">Manage admin users and security settings</p>
+      <div className="text-center space-y-3">
+        <div className="flex justify-center">
+          <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-3 rounded-full">
+            <Shield className="h-8 w-8 text-white" />
+          </div>
+        </div>
+        <h2 className="text-3xl font-bold text-slate-900 dark:text-white">Admin Management</h2>
+        <p className="text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+          Comprehensive admin control panel for user management and security
+        </p>
       </div>
 
-      {/* Management Cards */}
-      <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {/* Create New Admin */}
-        <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white flex items-center">
-              <UserPlus className="h-5 w-5 mr-2 text-blue-600" />
-              Create New Admin
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Form {...registerForm}>
-              <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
-                <FormField
-                  control={registerForm.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Full Name
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                          <Input
-                            {...field}
-                            placeholder="Enter full name"
-                            className="pl-9 h-10 border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-700/50 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-sm" />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={registerForm.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Email Address
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                          <Input
-                            {...field}
-                            type="email"
-                            placeholder="Enter email address"
-                            className="pl-9 h-10 border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-700/50 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-sm" />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={registerForm.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Password
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                          <Input
-                            {...field}
-                            type={showPasswords.register ? "text" : "password"}
-                            placeholder="Enter password"
-                            className="pl-9 pr-9 h-10 border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-700/50 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/20"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => togglePassword('register')}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                          >
-                            {showPasswords.register ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          </button>
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-sm" />
-                    </FormItem>
-                  )}
-                />
-                
-                <Button 
-                  type="submit" 
-                  disabled={registerMutation.isPending}
-                  className="w-full h-10 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-                >
-                  {registerMutation.isPending ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
-                      Creating...
-                    </>
-                  ) : (
-                    <>
-                      <UserPlus className="h-4 w-4 mr-2" />
-                      Create Admin
-                    </>
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+      {/* Tabs Interface */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm">
+          <TabsTrigger value="profile" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">
+            <User className="h-4 w-4 mr-2" />
+            My Profile
+          </TabsTrigger>
+          <TabsTrigger value="security" className="data-[state=active]:bg-green-500 data-[state=active]:text-white">
+            <Lock className="h-4 w-4 mr-2" />
+            Security
+          </TabsTrigger>
+          <TabsTrigger value="users" className="data-[state=active]:bg-purple-500 data-[state=active]:text-white">
+            <Users className="h-4 w-4 mr-2" />
+            Manage Users
+          </TabsTrigger>
+        </TabsList>
 
-        {/* Change Password */}
-        <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white flex items-center">
-              <Lock className="h-5 w-5 mr-2 text-green-600" />
-              Change Password
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Form {...passwordForm}>
-              <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-4">
-                <FormField
-                  control={passwordForm.control}
-                  name="currentPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Current Password
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                          <Input
-                            {...field}
-                            type={showPasswords.changeOld ? "text" : "password"}
-                            placeholder="Enter current password"
-                            className="pl-9 pr-9 h-10 border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-700/50 focus:border-green-500 focus:ring-1 focus:ring-green-500/20"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => togglePassword('changeOld')}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                          >
-                            {showPasswords.changeOld ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          </button>
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-sm" />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={passwordForm.control}
-                  name="newPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                        New Password
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                          <Input
-                            {...field}
-                            type={showPasswords.changeNew ? "text" : "password"}
-                            placeholder="Enter new password"
-                            className="pl-9 pr-9 h-10 border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-700/50 focus:border-green-500 focus:ring-1 focus:ring-green-500/20"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => togglePassword('changeNew')}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                          >
-                            {showPasswords.changeNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          </button>
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-sm" />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={passwordForm.control}
-                  name="confirmPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Confirm New Password
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                          <Input
-                            {...field}
-                            type={showPasswords.changeConfirm ? "text" : "password"}
-                            placeholder="Confirm new password"
-                            className="pl-9 pr-9 h-10 border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-700/50 focus:border-green-500 focus:ring-1 focus:ring-green-500/20"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => togglePassword('changeConfirm')}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                          >
-                            {showPasswords.changeConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          </button>
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-sm" />
-                    </FormItem>
-                  )}
-                />
-                
-                <Button 
-                  type="submit" 
-                  disabled={changePasswordMutation.isPending}
-                  className="w-full h-10 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
-                >
-                  {changePasswordMutation.isPending ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
-                      Updating...
-                    </>
-                  ) : (
-                    <>
-                      <Lock className="h-4 w-4 mr-2" />
-                      Update Password
-                    </>
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+        {/* Profile Tab */}
+        <TabsContent value="profile" className="space-y-6">
+          <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50">
+            <CardHeader>
+              <CardTitle className="flex items-center text-xl font-semibold text-slate-900 dark:text-white">
+                <User className="h-6 w-6 mr-3 text-blue-500" />
+                Update Profile Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Form {...profileForm}>
+                <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      control={profileForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                              <Input {...field} className="pl-10" placeholder="Enter your full name" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={profileForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email Address</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                              <Input {...field} type="email" className="pl-10" placeholder="Enter your email" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <FormField
+                    control={profileForm.control}
+                    name="currentPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Current Password (for verification)</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                            <Input 
+                              {...field} 
+                              type={showPasswords.profileCurrent ? "text" : "password"} 
+                              className="pl-10 pr-10" 
+                              placeholder="Enter current password" 
+                            />
+                            <button
+                              type="button"
+                              onClick={() => togglePassword('profileCurrent')}
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                            >
+                              {showPasswords.profileCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            </button>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <Button type="submit" disabled={updateProfileMutation.isPending} className="w-full bg-blue-600 hover:bg-blue-700">
+                    {updateProfileMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+                        Updating...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                        Update Profile
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-        {/* Update Profile */}
-        <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-semibold text-slate-900 dark:text-white flex items-center">
-              <Settings className="h-5 w-5 mr-2 text-purple-600" />
-              Update Profile
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Form {...profileForm}>
-              <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-4">
-                <FormField
-                  control={profileForm.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Full Name
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                          <Input
-                            {...field}
-                            placeholder="Enter your full name"
-                            className="pl-9 h-10 border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-700/50 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-sm" />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={profileForm.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Email Address
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                          <Input
-                            {...field}
-                            type="email"
-                            placeholder="Enter your email"
-                            className="pl-9 h-10 border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-700/50 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-sm" />
-                    </FormItem>
-                  )}
-                />
-                
-                <FormField
-                  control={profileForm.control}
-                  name="currentPassword"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Current Password
-                      </FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                          <Input
-                            {...field}
-                            type={showPasswords.profileCurrent ? "text" : "password"}
-                            placeholder="Enter current password"
-                            className="pl-9 pr-9 h-10 border-slate-300 dark:border-slate-600 bg-white/50 dark:bg-slate-700/50 focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => togglePassword('profileCurrent')}
-                            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                          >
-                            {showPasswords.profileCurrent ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                          </button>
-                        </div>
-                      </FormControl>
-                      <FormMessage className="text-red-500 text-sm" />
-                    </FormItem>
-                  )}
-                />
-                
-                <Button 
-                  type="submit" 
-                  disabled={updateProfileMutation.isPending}
-                  className="w-full h-10 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
-                >
-                  {updateProfileMutation.isPending ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
-                      Updating...
-                    </>
-                  ) : (
-                    <>
-                      <Settings className="h-4 w-4 mr-2" />
-                      Update Profile
-                    </>
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-      </div>
+        {/* Security Tab */}
+        <TabsContent value="security" className="space-y-6">
+          <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50">
+            <CardHeader>
+              <CardTitle className="flex items-center text-xl font-semibold text-slate-900 dark:text-white">
+                <Lock className="h-6 w-6 mr-3 text-green-500" />
+                Change Password
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Form {...passwordForm}>
+                <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="space-y-6">
+                  <FormField
+                    control={passwordForm.control}
+                    name="currentPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Current Password</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                            <Input 
+                              {...field} 
+                              type={showPasswords.changeOld ? "text" : "password"} 
+                              className="pl-10 pr-10" 
+                              placeholder="Enter current password" 
+                            />
+                            <button
+                              type="button"
+                              onClick={() => togglePassword('changeOld')}
+                              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                            >
+                              {showPasswords.changeOld ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            </button>
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      control={passwordForm.control}
+                      name="newPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>New Password</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                              <Input 
+                                {...field} 
+                                type={showPasswords.changeNew ? "text" : "password"} 
+                                className="pl-10 pr-10" 
+                                placeholder="Enter new password" 
+                              />
+                              <button
+                                type="button"
+                                onClick={() => togglePassword('changeNew')}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                              >
+                                {showPasswords.changeNew ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={passwordForm.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm New Password</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                              <Input 
+                                {...field} 
+                                type={showPasswords.changeConfirm ? "text" : "password"} 
+                                className="pl-10 pr-10" 
+                                placeholder="Confirm new password" 
+                              />
+                              <button
+                                type="button"
+                                onClick={() => togglePassword('changeConfirm')}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                              >
+                                {showPasswords.changeConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <Button type="submit" disabled={changePasswordMutation.isPending} className="w-full bg-green-600 hover:bg-green-700">
+                    {changePasswordMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+                        Updating...
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="h-4 w-4 mr-2" />
+                        Update Password
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Users Tab */}
+        <TabsContent value="users" className="space-y-6">
+          <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50">
+            <CardHeader>
+              <CardTitle className="flex items-center text-xl font-semibold text-slate-900 dark:text-white">
+                <UserPlus className="h-6 w-6 mr-3 text-purple-500" />
+                Create New Administrator
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Form {...registerForm}>
+                <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      control={registerForm.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                              <Input {...field} className="pl-10" placeholder="Enter full name" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={registerForm.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email Address</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                              <Input {...field} type="email" className="pl-10" placeholder="Enter email address" />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <FormField
+                      control={registerForm.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Password</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                              <Input 
+                                {...field} 
+                                type={showPasswords.register ? "text" : "password"} 
+                                className="pl-10 pr-10" 
+                                placeholder="Enter password" 
+                              />
+                              <button
+                                type="button"
+                                onClick={() => togglePassword('register')}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                              >
+                                {showPasswords.register ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={registerForm.control}
+                      name="confirmPassword"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Confirm Password</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+                              <Input 
+                                {...field} 
+                                type={showPasswords.registerConfirm ? "text" : "password"} 
+                                className="pl-10 pr-10" 
+                                placeholder="Confirm password" 
+                              />
+                              <button
+                                type="button"
+                                onClick={() => togglePassword('registerConfirm')}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                              >
+                                {showPasswords.registerConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                              </button>
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <Button type="submit" disabled={registerMutation.isPending} className="w-full bg-purple-600 hover:bg-purple-700">
+                    {registerMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+                        Creating...
+                      </>
+                    ) : (
+                      <>
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        Create Administrator
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

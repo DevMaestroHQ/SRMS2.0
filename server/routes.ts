@@ -70,14 +70,16 @@ const upload = multer({
     },
   }),
   fileFilter: (req, file, cb) => {
-    if (file.mimetype === "image/jpeg" || file.mimetype === "image/jpg") {
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
+    if (allowedTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error("Only JPG/JPEG files are allowed"));
+      cb(new Error("Only JPG/JPEG/PNG/PDF files are allowed"));
     }
   },
   limits: {
-    fileSize: 5 * 1024 * 1024, // 5MB limit for images
+    fileSize: 50 * 1024 * 1024, // 50MB limit per file
+    files: 50, // Allow up to 50 files at once
   },
 });
 
@@ -367,7 +369,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Upload and process student images
-  app.post("/api/admin/upload", authenticateAdmin, upload.array("studentImages", 10), async (req: AuthenticatedRequest, res) => {
+  app.post("/api/admin/upload", authenticateAdmin, upload.array("studentImages", 50), async (req: AuthenticatedRequest, res) => {
     try {
       const files = req.files as Express.Multer.File[];
       const { semesterId } = req.body;

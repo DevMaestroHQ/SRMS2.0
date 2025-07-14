@@ -1,11 +1,14 @@
 import { useState, useCallback } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Upload, FileImage, X, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { Upload, FileImage, X, CheckCircle, AlertCircle, Loader2, Calendar, FolderOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { authManager } from "@/lib/auth";
+import type { Semester } from "@shared/schema";
 
 interface ProcessingResult {
   filename: string;
@@ -25,6 +28,19 @@ export default function FileUpload() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [processingProgress, setProcessingProgress] = useState(0);
+  const [selectedSemester, setSelectedSemester] = useState<string>("");
+
+  // Fetch available semesters
+  const { data: semesters = [], isLoading: isLoadingSemesters } = useQuery({
+    queryKey: ["/api/admin/semesters"],
+    queryFn: async () => {
+      const response = await fetch("/api/admin/semesters", {
+        headers: authManager.getAuthHeaders(),
+      });
+      if (!response.ok) throw new Error("Failed to fetch semesters");
+      return response.json() as Promise<Semester[]>;
+    },
+  });
 
   const uploadMutation = useMutation({
     mutationFn: async (files: File[]) => {
@@ -32,6 +48,11 @@ export default function FileUpload() {
       files.forEach((file) => {
         formData.append("studentImages", file);
       });
+      
+      // Add semester selection if specified
+      if (selectedSemester) {
+        formData.append("semesterId", selectedSemester);
+      }
 
       const response = await fetch("/api/admin/upload", {
         method: "POST",
@@ -69,20 +90,43 @@ export default function FileUpload() {
   });
 
   const handleFileSelect = useCallback((files: FileList) => {
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "application/pdf"];
+    const maxFileSize = 50 * 1024 * 1024; // 50MB
+    
     const newFiles = Array.from(files).filter(file => {
-      if (file.type === "image/jpeg" || file.type === "image/jpg") {
-        return true;
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "Invalid File Type",
+          description: `${file.name} is not supported. Only JPG, PNG, and PDF files are allowed.`,
+          variant: "destructive",
+        });
+        return false;
       }
-      toast({
-        title: "Invalid File Type",
-        description: `${file.name} is not a JPG file. Only JPG files are allowed.`,
-        variant: "destructive",
-      });
-      return false;
+      
+      if (file.size > maxFileSize) {
+        toast({
+          title: "File Too Large",
+          description: `${file.name} exceeds 50MB limit.`,
+          variant: "destructive",
+        });
+        return false;
+      }
+      
+      return true;
     });
 
+    // Check total files limit
+    if (selectedFiles.length + newFiles.length > 50) {
+      toast({
+        title: "Too Many Files",
+        description: "Maximum 50 files can be uploaded at once.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setSelectedFiles(prev => [...prev, ...newFiles]);
-  }, [toast]);
+  }, [toast, selectedFiles.length]);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -141,6 +185,51 @@ export default function FileUpload() {
       </CardHeader>
       
       <CardContent className="space-y-6">
+        {/* Enhanced Capacity Info */}
+        <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center space-x-4">
+              <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-full">
+                <FolderOpen className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <div>
+                <h4 className="font-semibold text-slate-900 dark:text-white">Enhanced File Processing</h4>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Up to 50 files, 50MB each - JPG, PNG, PDF supported</p>
+              </div>
+            </div>
+            <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+              Enhanced Capacity
+            </Badge>
+          </div>
+        </div>
+
+        {/* Semester Selection */}
+        <div className="space-y-3">
+          <div className="flex items-center space-x-2">
+            <Calendar className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+              Select Semester (Optional)
+            </label>
+          </div>
+          <Select value={selectedSemester} onValueChange={setSelectedSemester}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Use active semester or select specific semester" />
+            </SelectTrigger>
+            <SelectContent>
+              {!isLoadingSemesters && semesters.map((semester) => (
+                <SelectItem key={semester.id} value={semester.id.toString()}>
+                  <div className="flex items-center justify-between w-full">
+                    <span>{semester.name}</span>
+                    {semester.isActive && (
+                      <Badge variant="default" className="ml-2 text-xs">Active</Badge>
+                    )}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Upload Area */}
         <div
           onDragOver={handleDragOver}
@@ -164,14 +253,14 @@ export default function FileUpload() {
                 Drop files here or click to browse
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-400">
-                Supports JPG files up to 5MB each
+                Supports JPG, PNG, PDF files up to 50MB each (Max 50 files)
               </p>
             </div>
             
             <input
               type="file"
               multiple
-              accept=".jpg,.jpeg"
+              accept=".jpg,.jpeg,.png,.pdf"
               onChange={(e) => e.target.files && handleFileSelect(e.target.files)}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
