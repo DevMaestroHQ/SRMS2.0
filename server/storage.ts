@@ -8,6 +8,7 @@ export interface IStorage {
   createAdmin(admin: InsertAdmin): Promise<Admin>;
   getAllAdmins(): Promise<Admin[]>;
   updateAdminPassword(adminId: number, newPassword: string): Promise<void>;
+  updateAdminProfile(adminId: number, name: string, email: string): Promise<Admin>;
   deleteAdmin(adminId: number): Promise<void>;
   
   // Student record operations
@@ -160,6 +161,24 @@ export class MemStorage implements IStorage {
     } else {
       throw new Error("Admin not found");
     }
+  }
+
+  async updateAdminProfile(adminId: number, name: string, email: string): Promise<Admin> {
+    const admin = this.admins.get(adminId);
+    if (!admin) {
+      throw new Error("Admin not found");
+    }
+    
+    // Check if email is already taken by another admin
+    const existingAdmin = await this.getAdminByEmail(email);
+    if (existingAdmin && existingAdmin.id !== adminId) {
+      throw new Error("Email already in use by another admin");
+    }
+    
+    admin.name = name;
+    admin.email = email;
+    this.admins.set(adminId, admin);
+    return admin;
   }
 
   async deleteAdmin(adminId: number): Promise<void> {

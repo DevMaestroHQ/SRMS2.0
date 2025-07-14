@@ -144,11 +144,30 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
                 <div className="flex items-start space-x-3">
                   <Info className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5" />
                   <div className="text-sm">
-                    <p className="font-medium text-slate-900 dark:text-white mb-1">Development Access:</p>
-                    <div className="space-y-1 text-slate-600 dark:text-slate-400">
-                      <p>Email: admin@university.edu.np</p>
+                    <p className="font-medium text-slate-900 dark:text-white mb-2">Development Access:</p>
+                    <div className="space-y-1 text-slate-600 dark:text-slate-400 mb-3">
+                      <p>Email: admin@university.edu</p>
                       <p>Password: admin123</p>
                     </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      💡 After logging in, go to Admin Management → Update Profile to change your login credentials easily!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Production Setup Info */}
+            {!import.meta.env.DEV && (
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-4">
+                <div className="flex items-start space-x-3">
+                  <Info className="h-4 w-4 text-green-600 dark:text-green-400 mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-medium text-slate-900 dark:text-white mb-2">Production Setup:</p>
+                    <p className="text-slate-600 dark:text-slate-400 text-xs">
+                      Set ADMIN_EMAIL, ADMIN_PASSWORD, and ADMIN_NAME environment variables for initial login. 
+                      Then use the admin panel to change credentials easily.
+                    </p>
                   </div>
                 </div>
               </div>

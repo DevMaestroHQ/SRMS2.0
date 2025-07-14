@@ -60,6 +60,12 @@ export const changePasswordSchema = z.object({
   path: ["confirmPassword"],
 });
 
+export const updateProfileSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  currentPassword: z.string().min(1, "Current password is required for profile changes"),
+});
+
 export type Admin = typeof admins.$inferSelect;
 export type InsertAdmin = z.infer<typeof insertAdminSchema>;
 export type StudentRecord = typeof studentRecords.$inferSelect;
@@ -68,3 +74,4 @@ export type LoginCredentials = z.infer<typeof loginSchema>;
 export type StudentSearch = z.infer<typeof studentSearchSchema>;
 export type AdminRegistration = z.infer<typeof adminRegistrationSchema>;
 export type ChangePassword = z.infer<typeof changePasswordSchema>;
+export type UpdateProfile = z.infer<typeof updateProfileSchema>;

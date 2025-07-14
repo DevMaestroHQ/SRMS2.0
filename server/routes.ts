@@ -205,6 +205,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Update admin profile
+  app.post("/api/admin/update-profile", authenticateAdmin, async (req: AuthenticatedRequest, res) => {
+    try {
+      const { name, email, currentPassword } = req.body;
+      
+      // Get current admin
+      const admin = await storage.getAdminById(req.admin!.id);
+      if (!admin) {
+        return res.status(401).json({ message: "Admin not found" });
+      }
+      
+      // Verify current password
+      const isValidPassword = await AuthService.verifyPassword(currentPassword, admin.password);
+      if (!isValidPassword) {
+        return res.status(400).json({ message: "Current password is incorrect" });
+      }
+      
+      // Update profile
+      const updatedAdmin = await storage.updateAdminProfile(admin.id, name, email);
+      
+      res.json({
+        message: "Profile updated successfully",
+        admin: {
+          id: updatedAdmin.id,
+          name: updatedAdmin.name,
+          email: updatedAdmin.email,
+        },
+      });
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("Email already in use")) {
+        res.status(400).json({ message: "Email already in use by another admin" });
+      } else if (error instanceof Error && error.message.includes("validation")) {
+        res.status(400).json({ message: "Invalid profile data" });
+      } else {
+        res.status(500).json({ message: "Failed to update profile" });
+      }
+    }
+  });
+
   // Delete admin user
   app.delete("/api/admin/users/:id", authenticateAdmin, async (req: AuthenticatedRequest, res) => {
     try {

@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { UserPlus, Key, Shield, User, Mail, Lock } from "lucide-react";
+import { UserPlus, Key, Shield, User, Mail, Lock, Edit, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,12 +9,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/hooks/use-toast";
 import { authManager } from "@/lib/auth";
 import { apiRequest } from "@/lib/queryClient";
-import type { AdminRegistration, ChangePassword } from "@shared/schema";
-import { adminRegistrationSchema, changePasswordSchema } from "@shared/schema";
+import type { AdminRegistration, ChangePassword, UpdateProfile } from "@shared/schema";
+import { adminRegistrationSchema, changePasswordSchema, updateProfileSchema } from "@shared/schema";
 
 export default function AdminManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const currentAdmin = authManager.getAuthState().admin;
 
   const registerForm = useForm<AdminRegistration>({
     resolver: zodResolver(adminRegistrationSchema),
@@ -31,6 +32,15 @@ export default function AdminManagement() {
       currentPassword: "",
       newPassword: "",
       confirmPassword: "",
+    },
+  });
+
+  const profileForm = useForm<UpdateProfile>({
+    resolver: zodResolver(updateProfileSchema),
+    defaultValues: {
+      name: currentAdmin?.name || "",
+      email: currentAdmin?.email || "",
+      currentPassword: "",
     },
   });
 
@@ -78,12 +88,40 @@ export default function AdminManagement() {
     },
   });
 
+  const updateProfileMutation = useMutation({
+    mutationFn: (data: UpdateProfile) => 
+      apiRequest("/api/admin/update-profile", {
+        method: "POST",
+        body: JSON.stringify(data),
+      }),
+    onSuccess: (data) => {
+      toast({
+        title: "Profile Updated",
+        description: "Your profile information has been updated successfully.",
+      });
+      profileForm.reset();
+      // Update the auth state with new profile data
+      authManager.getAuthState().admin = data.admin;
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Profile Update Failed",
+        description: error.message || "Failed to update profile.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const onRegisterSubmit = (data: AdminRegistration) => {
     registerMutation.mutate(data);
   };
 
   const onPasswordSubmit = (data: ChangePassword) => {
     changePasswordMutation.mutate(data);
+  };
+
+  const onProfileSubmit = (data: UpdateProfile) => {
+    updateProfileMutation.mutate(data);
   };
 
   return (
@@ -101,7 +139,7 @@ export default function AdminManagement() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-3 gap-6">
         {/* Register New Admin */}
         <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
           <CardHeader className="pb-4">
@@ -288,6 +326,103 @@ export default function AdminManagement() {
                       <>
                         <Key className="h-4 w-4 mr-2" />
                         Update Password
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+
+        {/* Update Profile */}
+        <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg font-medium text-slate-900 dark:text-white flex items-center">
+              <Edit className="h-5 w-5 mr-2 text-purple-600" />
+              Update Profile
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Form {...profileForm}>
+              <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="space-y-4">
+                <FormField
+                  control={profileForm.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                        Full Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Enter your full name"
+                          className="h-11 px-4 text-base border border-slate-300 dark:border-slate-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 rounded-md"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-600 text-sm" />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={profileForm.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                        Email Address
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="email"
+                          placeholder="Enter your email"
+                          className="h-11 px-4 text-base border border-slate-300 dark:border-slate-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 rounded-md"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-600 text-sm" />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={profileForm.control}
+                  name="currentPassword"
+                  render={({ field }) => (
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                        Current Password
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="password"
+                          placeholder="Enter current password"
+                          className="h-11 px-4 text-base border border-slate-300 dark:border-slate-600 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 rounded-md"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-600 text-sm" />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="pt-2">
+                  <Button 
+                    type="submit" 
+                    disabled={updateProfileMutation.isPending}
+                    className="w-full h-11 text-base font-medium bg-purple-600 hover:bg-purple-700 text-white rounded-md"
+                  >
+                    {updateProfileMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2" />
+                        Updating...
+                      </>
+                    ) : (
+                      <>
+                        <Settings className="h-4 w-4 mr-2" />
+                        Update Profile
                       </>
                     )}
                   </Button>
