@@ -348,10 +348,6 @@ export default function AdminDashboard() {
             </div>
           </TabsContent>
 
-          <TabsContent value="admin" className="space-y-6">
-            <AdminManagement />
-          </TabsContent>
-
           <TabsContent value="records" className="space-y-6">
 
             <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50">
