@@ -46,7 +46,11 @@ export default function AdminManagement() {
   // Mutations
   const changePasswordMutation = useMutation({
     mutationFn: (data: ChangePassword) => 
-      apiRequest("/api/admin/change-password", { method: "POST", body: data }),
+      apiRequest("/api/admin/change-password", { 
+        method: "POST", 
+        body: data, 
+        headers: authManager.getAuthHeaders() 
+      }),
     onSuccess: () => {
       toast({ title: "Password Changed", description: "Your password has been updated successfully." });
       passwordForm.reset();
@@ -63,7 +67,11 @@ export default function AdminManagement() {
 
   const updateProfileMutation = useMutation({
     mutationFn: (data: UpdateProfile) => 
-      apiRequest("/api/admin/update-profile", { method: "POST", body: data }),
+      apiRequest("/api/admin/update-profile", { 
+        method: "POST", 
+        body: data, 
+        headers: authManager.getAuthHeaders() 
+      }),
     onSuccess: () => {
       toast({ title: "Profile Updated", description: "Your profile has been updated successfully." });
       profileForm.reset();
