@@ -1,5 +1,7 @@
-import { admins, studentRecords, type Admin, type InsertAdmin, type StudentRecord, type InsertStudentRecord } from "@shared/schema";
+import { admins, studentRecords, semesters, fileUploads, type Admin, type InsertAdmin, type StudentRecord, type InsertStudentRecord, type Semester, type InsertSemester, type FileUpload, type InsertFileUpload } from "@shared/schema";
 import bcrypt from "bcrypt";
+import { db } from "./db";
+import { eq, and, desc } from "drizzle-orm";
 
 export interface IStorage {
   // Admin operations
@@ -11,186 +13,198 @@ export interface IStorage {
   updateAdminProfile(adminId: number, name: string, email: string): Promise<Admin>;
   deleteAdmin(adminId: number): Promise<void>;
   
+  // Semester operations
+  createSemester(semester: InsertSemester): Promise<Semester>;
+  getAllSemesters(): Promise<Semester[]>;
+  getSemesterById(id: number): Promise<Semester | undefined>;
+  updateSemester(id: number, data: Partial<InsertSemester>): Promise<Semester>;
+  deleteSemester(id: number): Promise<void>;
+  setActiveSemester(id: number): Promise<void>;
+  
   // Student record operations
   createStudentRecord(record: InsertStudentRecord): Promise<StudentRecord>;
   getStudentRecord(name: string, tuRegd: string): Promise<StudentRecord | undefined>;
   getAllStudentRecords(): Promise<StudentRecord[]>;
+  getStudentRecordsBySemester(semesterId: number): Promise<StudentRecord[]>;
   deleteStudentRecord(id: number): Promise<void>;
   deleteAllStudentRecords(): Promise<void>;
+  
+  // File upload operations
+  createFileUpload(upload: InsertFileUpload): Promise<FileUpload>;
+  getFileUploadById(id: number): Promise<FileUpload | undefined>;
+  getAllFileUploads(): Promise<FileUpload[]>;
+  deleteFileUpload(id: number): Promise<void>;
 }
 
-export class MemStorage implements IStorage {
-  private admins: Map<number, Admin>;
-  private studentRecords: Map<number, StudentRecord>;
-  private currentAdminId: number;
-  private currentRecordId: number;
-
+export class DatabaseStorage implements IStorage {
   constructor() {
-    this.admins = new Map();
-    this.studentRecords = new Map();
-    this.currentAdminId = 1;
-    this.currentRecordId = 1;
-    
-    // Create default admin
-    this.initializeDefaultAdmin();
-    
-    // Add sample student records
-    this.addSampleData();
+    this.initializeDatabase();
   }
 
-  private async initializeDefaultAdmin() {
-    // Use environment variables for production security
+  private async initializeDatabase() {
+    try {
+      // Create default admin if doesn't exist
+      const existingAdmin = await this.getAdminByEmail(process.env.ADMIN_EMAIL || "admin@university.edu");
+      if (!existingAdmin) {
+        await this.createDefaultAdmin();
+      }
+      
+      // Create default semester if none exists
+      const existingSemesters = await this.getAllSemesters();
+      if (existingSemesters.length === 0) {
+        await this.createDefaultSemester();
+      }
+    } catch (error) {
+      console.error("Database initialization error:", error);
+    }
+  }
+
+  private async createDefaultAdmin() {
     const adminEmail = process.env.ADMIN_EMAIL || "admin@university.edu";
     const adminPassword = process.env.ADMIN_PASSWORD || "admin123";
     const adminName = process.env.ADMIN_NAME || "System Administrator";
     
     const hashedPassword = await bcrypt.hash(adminPassword, 10);
-    const defaultAdmin: Admin = {
-      id: this.currentAdminId++,
+    await this.createAdmin({
       email: adminEmail,
       password: hashedPassword,
       name: adminName,
-      createdAt: new Date(),
-    };
-    this.admins.set(defaultAdmin.id, defaultAdmin);
-  }
-
-  private addSampleData() {
-    // Add sample student records for testing
-    const sampleRecords = [
-      {
-        id: this.currentRecordId++,
-        name: "John Doe",
-        tuRegd: "12345678",
-        result: "Passed",
-        imagePath: "/sample/path1.jpg",
-        pdfPath: "/sample/path1.pdf",
-        uploadedAt: new Date(),
-        uploadedBy: 1,
-      },
-      {
-        id: this.currentRecordId++,
-        name: "Jane Smith",
-        tuRegd: "87654321",
-        result: "Failed",
-        imagePath: "/sample/path2.jpg",
-        pdfPath: "/sample/path2.pdf",
-        uploadedAt: new Date(),
-        uploadedBy: 1,
-      },
-      {
-        id: this.currentRecordId++,
-        name: "Alice Johnson",
-        tuRegd: "11111111",
-        result: "Passed",
-        imagePath: "/sample/path3.jpg",
-        pdfPath: "/sample/path3.pdf",
-        uploadedAt: new Date(),
-        uploadedBy: 1,
-      },
-    ];
-
-    sampleRecords.forEach(record => {
-      this.studentRecords.set(record.id, record);
     });
   }
 
+  private async createDefaultSemester() {
+    const currentYear = new Date().getFullYear();
+    await this.createSemester({
+      name: `Spring ${currentYear}`,
+      year: currentYear,
+      season: "Spring",
+      isActive: true,
+    });
+  }
+
+  // Admin operations
   async getAdminByEmail(email: string): Promise<Admin | undefined> {
-    return Array.from(this.admins.values()).find(admin => admin.email === email);
+    const [admin] = await db.select().from(admins).where(eq(admins.email, email));
+    return admin || undefined;
   }
 
   async getAdminById(id: number): Promise<Admin | undefined> {
-    return this.admins.get(id);
+    const [admin] = await db.select().from(admins).where(eq(admins.id, id));
+    return admin || undefined;
   }
 
   async createAdmin(insertAdmin: InsertAdmin): Promise<Admin> {
-    const hashedPassword = await bcrypt.hash(insertAdmin.password, 10);
-    const admin: Admin = {
-      ...insertAdmin,
-      id: this.currentAdminId++,
-      password: hashedPassword,
-      createdAt: new Date(),
-    };
-    this.admins.set(admin.id, admin);
+    const [admin] = await db.insert(admins).values(insertAdmin).returning();
     return admin;
   }
 
-  async createStudentRecord(insertRecord: InsertStudentRecord): Promise<StudentRecord> {
-    const record: StudentRecord = {
-      ...insertRecord,
-      id: this.currentRecordId++,
-      uploadedAt: new Date(),
-    };
-    this.studentRecords.set(record.id, record);
-    return record;
-  }
-
-  async getStudentRecord(name: string, tuRegd: string): Promise<StudentRecord | undefined> {
-    return Array.from(this.studentRecords.values()).find(
-      record => record.name.trim().toLowerCase() === name.trim().toLowerCase() && 
-                record.tuRegd.trim() === tuRegd.trim()
-    );
-  }
-
-  async getAllStudentRecords(): Promise<StudentRecord[]> {
-    return Array.from(this.studentRecords.values()).sort((a, b) => 
-      new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime()
-    );
-  }
-
-  async deleteStudentRecord(id: number): Promise<void> {
-    this.studentRecords.delete(id);
-  }
-
-  async deleteAllStudentRecords(): Promise<void> {
-    this.studentRecords.clear();
-  }
-
   async getAllAdmins(): Promise<Admin[]> {
-    return Array.from(this.admins.values()).sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    return await db.select().from(admins).orderBy(desc(admins.createdAt));
   }
 
   async updateAdminPassword(adminId: number, newPassword: string): Promise<void> {
-    const admin = this.admins.get(adminId);
-    if (admin) {
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      admin.password = hashedPassword;
-      this.admins.set(adminId, admin);
-    } else {
-      throw new Error("Admin not found");
-    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await db.update(admins).set({ password: hashedPassword }).where(eq(admins.id, adminId));
   }
 
   async updateAdminProfile(adminId: number, name: string, email: string): Promise<Admin> {
-    const admin = this.admins.get(adminId);
-    if (!admin) {
-      throw new Error("Admin not found");
-    }
-    
-    // Check if email is already taken by another admin
-    const existingAdmin = await this.getAdminByEmail(email);
-    if (existingAdmin && existingAdmin.id !== adminId) {
-      throw new Error("Email already in use by another admin");
-    }
-    
-    admin.name = name;
-    admin.email = email;
-    this.admins.set(adminId, admin);
+    const [admin] = await db.update(admins).set({ name, email }).where(eq(admins.id, adminId)).returning();
     return admin;
   }
 
   async deleteAdmin(adminId: number): Promise<void> {
-    const totalAdmins = this.admins.size;
-    if (totalAdmins <= 1) {
-      throw new Error("Cannot delete the last admin account");
+    await db.delete(admins).where(eq(admins.id, adminId));
+  }
+
+  // Semester operations
+  async createSemester(insertSemester: InsertSemester): Promise<Semester> {
+    // If this semester is being set as active, deactivate all others
+    if (insertSemester.isActive) {
+      await db.update(semesters).set({ isActive: false });
     }
-    const deleted = this.admins.delete(adminId);
-    if (!deleted) {
-      throw new Error("Admin not found");
+    
+    const [semester] = await db.insert(semesters).values(insertSemester).returning();
+    return semester;
+  }
+
+  async getAllSemesters(): Promise<Semester[]> {
+    return await db.select().from(semesters).orderBy(desc(semesters.year), desc(semesters.createdAt));
+  }
+
+  async getSemesterById(id: number): Promise<Semester | undefined> {
+    const [semester] = await db.select().from(semesters).where(eq(semesters.id, id));
+    return semester || undefined;
+  }
+
+  async updateSemester(id: number, data: Partial<InsertSemester>): Promise<Semester> {
+    // If setting as active, deactivate all others first
+    if (data.isActive) {
+      await db.update(semesters).set({ isActive: false });
     }
+    
+    const [semester] = await db.update(semesters).set(data).where(eq(semesters.id, id)).returning();
+    return semester;
+  }
+
+  async deleteSemester(id: number): Promise<void> {
+    await db.delete(semesters).where(eq(semesters.id, id));
+  }
+
+  async setActiveSemester(id: number): Promise<void> {
+    // Deactivate all semesters first
+    await db.update(semesters).set({ isActive: false });
+    // Then activate the selected one
+    await db.update(semesters).set({ isActive: true }).where(eq(semesters.id, id));
+  }
+
+  // Student record operations
+  async createStudentRecord(insertRecord: InsertStudentRecord): Promise<StudentRecord> {
+    const [record] = await db.insert(studentRecords).values(insertRecord).returning();
+    return record;
+  }
+
+  async getStudentRecord(name: string, tuRegd: string): Promise<StudentRecord | undefined> {
+    const [record] = await db.select().from(studentRecords)
+      .where(and(eq(studentRecords.name, name), eq(studentRecords.tuRegd, tuRegd)));
+    return record || undefined;
+  }
+
+  async getAllStudentRecords(): Promise<StudentRecord[]> {
+    return await db.select().from(studentRecords).orderBy(desc(studentRecords.uploadedAt));
+  }
+
+  async getStudentRecordsBySemester(semesterId: number): Promise<StudentRecord[]> {
+    return await db.select().from(studentRecords)
+      .where(eq(studentRecords.semesterId, semesterId))
+      .orderBy(desc(studentRecords.uploadedAt));
+  }
+
+  async deleteStudentRecord(id: number): Promise<void> {
+    await db.delete(studentRecords).where(eq(studentRecords.id, id));
+  }
+
+  async deleteAllStudentRecords(): Promise<void> {
+    await db.delete(studentRecords);
+  }
+
+  // File upload operations
+  async createFileUpload(insertUpload: InsertFileUpload): Promise<FileUpload> {
+    const [upload] = await db.insert(fileUploads).values(insertUpload).returning();
+    return upload;
+  }
+
+  async getFileUploadById(id: number): Promise<FileUpload | undefined> {
+    const [upload] = await db.select().from(fileUploads).where(eq(fileUploads.id, id));
+    return upload || undefined;
+  }
+
+  async getAllFileUploads(): Promise<FileUpload[]> {
+    return await db.select().from(fileUploads).orderBy(desc(fileUploads.uploadedAt));
+  }
+
+  async deleteFileUpload(id: number): Promise<void> {
+    await db.delete(fileUploads).where(eq(fileUploads.id, id));
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

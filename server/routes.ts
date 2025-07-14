@@ -9,7 +9,7 @@ import { storage } from "./storage";
 import { AuthService } from "./services/auth";
 import { OCRService } from "./services/ocr";
 import { authenticateAdmin, type AuthenticatedRequest } from "./middleware/auth";
-import { loginSchema, studentSearchSchema, insertStudentRecordSchema, adminRegistrationSchema, changePasswordSchema } from "@shared/schema";
+import { loginSchema, studentSearchSchema, insertStudentRecordSchema, adminRegistrationSchema, changePasswordSchema, insertSemesterSchema, updateProfileSchema } from "@shared/schema";
 
 // Configure multer for file uploads
 const uploadsDir = path.join(process.cwd(), "uploads");
@@ -267,13 +267,126 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Semester management routes
+  
+  // Get all semesters
+  app.get("/api/admin/semesters", authenticateAdmin, async (req, res) => {
+    try {
+      const semesters = await storage.getAllSemesters();
+      res.json(semesters);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch semesters" });
+    }
+  });
+
+  // Create new semester
+  app.post("/api/admin/semesters", authenticateAdmin, async (req, res) => {
+    try {
+      const semesterData = insertSemesterSchema.parse(req.body);
+      const newSemester = await storage.createSemester(semesterData);
+      res.json(newSemester);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("validation")) {
+        res.status(400).json({ message: "Invalid semester data" });
+      } else {
+        res.status(500).json({ message: "Failed to create semester" });
+      }
+    }
+  });
+
+  // Update semester
+  app.put("/api/admin/semesters/:id", authenticateAdmin, async (req, res) => {
+    try {
+      const semesterId = parseInt(req.params.id);
+      const semesterData = req.body;
+      const updatedSemester = await storage.updateSemester(semesterId, semesterData);
+      res.json(updatedSemester);
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("not found")) {
+        res.status(404).json({ message: "Semester not found" });
+      } else {
+        res.status(500).json({ message: "Failed to update semester" });
+      }
+    }
+  });
+
+  // Delete semester
+  app.delete("/api/admin/semesters/:id", authenticateAdmin, async (req, res) => {
+    try {
+      const semesterId = parseInt(req.params.id);
+      await storage.deleteSemester(semesterId);
+      res.json({ message: "Semester deleted successfully" });
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("not found")) {
+        res.status(404).json({ message: "Semester not found" });
+      } else if (error instanceof Error && error.message.includes("Cannot delete active semester")) {
+        res.status(400).json({ message: "Cannot delete active semester" });
+      } else {
+        res.status(500).json({ message: "Failed to delete semester" });
+      }
+    }
+  });
+
+  // Set active semester
+  app.post("/api/admin/semesters/:id/activate", authenticateAdmin, async (req, res) => {
+    try {
+      const semesterId = parseInt(req.params.id);
+      await storage.setActiveSemester(semesterId);
+      res.json({ message: "Active semester updated successfully" });
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("not found")) {
+        res.status(404).json({ message: "Semester not found" });
+      } else {
+        res.status(500).json({ message: "Failed to update active semester" });
+      }
+    }
+  });
+
+  // Get semester statistics
+  app.get("/api/admin/semester-stats", authenticateAdmin, async (req, res) => {
+    try {
+      const semesters = await storage.getAllSemesters();
+      const stats: Record<number, { studentCount: number; passCount: number; failCount: number }> = {};
+      
+      for (const semester of semesters) {
+        const records = await storage.getStudentRecordsBySemester(semester.id);
+        const passCount = records.filter(r => r.result === "Passed").length;
+        const failCount = records.filter(r => r.result === "Failed").length;
+        
+        stats[semester.id] = {
+          studentCount: records.length,
+          passCount,
+          failCount
+        };
+      }
+      
+      res.json(stats);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch semester statistics" });
+    }
+  });
+
   // Upload and process student images
   app.post("/api/admin/upload", authenticateAdmin, upload.array("studentImages", 10), async (req: AuthenticatedRequest, res) => {
     try {
       const files = req.files as Express.Multer.File[];
+      const { semesterId } = req.body;
       
       if (!files || files.length === 0) {
         return res.status(400).json({ message: "No files uploaded" });
+      }
+
+      // Get active semester if no semester specified
+      let activeSemester = null;
+      if (semesterId) {
+        activeSemester = await storage.getSemesterById(parseInt(semesterId));
+      } else {
+        const semesters = await storage.getAllSemesters();
+        activeSemester = semesters.find(s => s.isActive);
+      }
+
+      if (!activeSemester) {
+        return res.status(400).json({ message: "No active semester found. Please create and activate a semester first." });
       }
 
       const results = [];
@@ -283,7 +396,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Read file buffer for OCR processing
           const fileBuffer = fs.readFileSync(file.path);
           
-          // Extract data using OCR on JPG
+          // Extract data using enhanced OCR on JPG
           const ocrResult = await OCRService.extractDataFromJPG(fileBuffer, file.originalname);
           
           // Validate that we got meaningful data
@@ -296,13 +409,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const pdfPath = path.join(pdfsDir, pdfFileName);
           await convertJPGToPDF(file.path, pdfPath);
 
-          // Store in database
+          // Store in database with enhanced fields
           const studentRecord = await storage.createStudentRecord({
             name: ocrResult.name,
             tuRegd: ocrResult.tuRegd,
             result: ocrResult.result,
+            grade: ocrResult.grade || null,
+            marks: ocrResult.marks || null,
+            totalMarks: ocrResult.totalMarks || null,
+            subject: ocrResult.subject || null,
+            program: ocrResult.program || null,
+            faculty: ocrResult.faculty || null,
+            semesterId: activeSemester.id,
             imagePath: file.path,
             pdfPath: pdfPath,
+            originalFilename: file.originalname,
+            fileSize: file.size,
             uploadedBy: req.admin!.id,
           });
 

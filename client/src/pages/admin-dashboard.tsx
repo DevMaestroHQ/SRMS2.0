@@ -28,6 +28,7 @@ import { authManager } from "@/lib/auth";
 import FileUpload from "@/components/file-upload";
 import AdminManagement from "@/components/admin-management";
 import ActivityTracker from "@/components/activity-tracker";
+import SemesterManagement from "@/components/semester-management";
 import { type StudentRecord } from "@shared/schema";
 import universityLogo from "@/assets/university-logo.png";
 
