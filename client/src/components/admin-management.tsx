@@ -108,8 +108,7 @@ export default function AdminManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-purple-50/30 dark:from-slate-900 dark:via-indigo-900/20 dark:to-purple-900/20 p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
+    <div className="max-w-7xl mx-auto space-y-8">
         {/* Hero Header */}
         <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-8 text-white">
           <div className="absolute inset-0 bg-black/20"></div>
@@ -635,6 +634,5 @@ export default function AdminManagement() {
           </div>
         </div>
       </div>
-    </div>
   );
 }
