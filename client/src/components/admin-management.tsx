@@ -623,8 +623,8 @@ export default function AdminManagement() {
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h3 className="font-semibold text-slate-900 dark:text-white">Admin Control Center</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-400">Manage all administrative functions from this dashboard</p>
+                <h3 className="font-semibold text-slate-900 dark:text-white">System Status</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-400">All administrative systems are operational</p>
               </div>
             </div>
             <div className="flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
