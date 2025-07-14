@@ -183,26 +183,31 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm">
-            <TabsTrigger value="overview" className="flex items-center space-x-2">
-              <BarChart3 className="h-4 w-4" />
-              <span>Overview</span>
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm">
+            <TabsTrigger value="overview" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm">
+              <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Overview</span>
+              <span className="sm:hidden">Stats</span>
             </TabsTrigger>
-            <TabsTrigger value="upload" className="flex items-center space-x-2">
-              <Upload className="h-4 w-4" />
-              <span>Upload Results</span>
+            <TabsTrigger value="upload" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm">
+              <Upload className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Upload Results</span>
+              <span className="sm:hidden">Upload</span>
             </TabsTrigger>
-            <TabsTrigger value="records" className="flex items-center space-x-2">
-              <FileText className="h-4 w-4" />
-              <span>Student Records</span>
+            <TabsTrigger value="records" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm">
+              <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Student Records</span>
+              <span className="sm:hidden">Records</span>
             </TabsTrigger>
-            <TabsTrigger value="activity" className="flex items-center space-x-2">
-              <Eye className="h-4 w-4" />
-              <span>Activity</span>
+            <TabsTrigger value="activity" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm">
+              <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Activity</span>
+              <span className="sm:hidden">Log</span>
             </TabsTrigger>
-            <TabsTrigger value="admin" className="flex items-center space-x-2">
-              <Settings className="h-4 w-4" />
-              <span>Admin Management</span>
+            <TabsTrigger value="admin" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm">
+              <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Admin Management</span>
+              <span className="sm:hidden">Admin</span>
             </TabsTrigger>
           </TabsList>
 

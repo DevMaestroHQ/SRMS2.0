@@ -28,9 +28,9 @@ export default function StudentSearch({ onResultFound }: StudentSearchProps) {
 
   const searchMutation = useMutation({
     mutationFn: async (searchData: StudentSearch) => {
-      return apiRequest(`/api/search`, {
+      return apiRequest(`/api/get-result`, {
         method: "POST",
-        body: JSON.stringify(searchData),
+        body: searchData,
       });
     },
     onSuccess: (data) => {
@@ -54,10 +54,10 @@ export default function StudentSearch({ onResultFound }: StudentSearchProps) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
+          <div className="space-y-4 sm:space-y-6">
             <FormField
               control={form.control}
               name="name"
@@ -67,11 +67,14 @@ export default function StudentSearch({ onResultFound }: StudentSearchProps) {
                     Full Name
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      {...field} 
-                      placeholder="Enter your complete name"
-                      className="h-11 px-4 text-base border border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md bg-white dark:bg-slate-800"
-                    />
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+                      <Input 
+                        {...field} 
+                        placeholder="Enter your complete name"
+                        className="pl-10 h-11 sm:h-12 text-base border border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md bg-white dark:bg-slate-800"
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage className="text-red-600 text-sm" />
                 </FormItem>
@@ -87,11 +90,14 @@ export default function StudentSearch({ onResultFound }: StudentSearchProps) {
                     T.U. Registration Number
                   </FormLabel>
                   <FormControl>
-                    <Input 
-                      {...field} 
-                      placeholder="Enter your registration number"
-                      className="h-11 px-4 text-base border border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md bg-white dark:bg-slate-800 font-mono"
-                    />
+                    <div className="relative">
+                      <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-slate-400" />
+                      <Input 
+                        {...field} 
+                        placeholder="Enter your T.U. registration number"
+                        className="pl-10 h-11 sm:h-12 text-base border border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md bg-white dark:bg-slate-800 font-mono"
+                      />
+                    </div>
                   </FormControl>
                   <FormMessage className="text-red-600 text-sm" />
                 </FormItem>
@@ -103,7 +109,7 @@ export default function StudentSearch({ onResultFound }: StudentSearchProps) {
             <Button 
               type="submit" 
               disabled={searchMutation.isPending}
-              className="w-full h-12 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+              className="w-full h-12 sm:h-14 text-base sm:text-lg font-semibold bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 hover:from-cyan-700 hover:via-blue-700 hover:to-purple-700 text-white rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
             >
               {searchMutation.isPending ? (
                 <>
@@ -113,7 +119,7 @@ export default function StudentSearch({ onResultFound }: StudentSearchProps) {
               ) : (
                 <>
                   <Search className="h-5 w-5 mr-2" />
-                  Search Results
+                  Find My Result
                 </>
               )}
             </Button>

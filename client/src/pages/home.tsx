@@ -201,6 +201,18 @@ export default function Home() {
                     <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
                       Enter your name and T.U. registration number to search for your academic results
                     </p>
+                    
+                    {/* Demo Example Card */}
+                    <div className="mt-6 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 rounded-lg border border-cyan-200 dark:border-cyan-800 max-w-md mx-auto">
+                      <p className="text-sm text-slate-700 dark:text-slate-300 font-medium mb-2">
+                        <span className="inline-block w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                        Try searching with this sample:
+                      </p>
+                      <div className="text-sm space-y-1 text-slate-600 dark:text-slate-400">
+                        <p><strong>Name:</strong> Anish Banjade</p>
+                        <p><strong>T.U. Registration:</strong> 1-2-51-5-2022</p>
+                      </div>
+                    </div>
                   </div>
                   
                   <StudentSearch onResultFound={handleResultFound} />
@@ -238,16 +250,6 @@ export default function Home() {
                   </Card>
                   
                   <Card className="text-center p-6 card-hover bg-white/60 backdrop-blur-sm border-0 shadow-material-2">
-                    <div className="bg-purple-100 dark:bg-purple-900/20 p-3 rounded-xl w-fit mx-auto mb-4">
-                      <Shield className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-                    </div>
-                    <h4 className="font-semibold mb-2">Secure Access</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Your data is protected with enterprise-grade security
-                    </p>
-                  </Card>
-                  
-                  <Card className="text-center p-6 card-hover bg-white/50 backdrop-blur-sm border-0 shadow-material-2">
                     <div className="bg-purple-100 dark:bg-purple-900/20 p-3 rounded-xl w-fit mx-auto mb-4">
                       <Shield className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                     </div>
