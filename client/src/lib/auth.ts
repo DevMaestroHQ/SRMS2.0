@@ -31,8 +31,10 @@ class AuthManager {
   }
 
   async login(credentials: LoginCredentials): Promise<AuthState> {
-    const response = await apiRequest("POST", "/api/admin/login", credentials);
-    const data = await response.json();
+    const data = await apiRequest("/api/admin/login", {
+      method: "POST",
+      body: credentials,
+    });
     
     this.authState = {
       isAuthenticated: true,
