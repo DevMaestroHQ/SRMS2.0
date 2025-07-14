@@ -51,140 +51,99 @@ export default function StudentResults({ result }: StudentResultsProps) {
   };
 
   return (
-    <div className="mt-8">
-      <Card className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 shadow-xl overflow-hidden">
-        {/* Header */}
-        <CardHeader className="bg-university-blue text-white p-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-white/20 rounded-xl backdrop-blur-sm flex items-center justify-center">
-                <CheckCircle className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="text-xl font-bold">Result Found Successfully</h3>
-                <p className="text-white/90 text-sm">Academic record retrieved and verified</p>
-              </div>
+    <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
+      {/* Header */}
+      <div className="bg-green-50 dark:bg-green-900/20 border-b border-green-200 dark:border-green-700 p-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white">Result Found</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Record verified successfully</p>
             </div>
-            <Badge className="bg-academic-green text-white border-0 px-4 py-2">
-              <Award className="h-4 w-4 mr-2" />
-              Verified
-            </Badge>
           </div>
-        </CardHeader>
-        
-        <CardContent className="p-6">
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Student Information */}
-            <div className="space-y-6">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-university-blue rounded-lg flex items-center justify-center">
-                  <User className="h-5 w-5 text-white" />
-                </div>
-                <h4 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Student Information</h4>
+        </div>
+      </div>
+      
+      <div className="p-6">
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Student Information */}
+          <div className="space-y-6">
+            <h4 className="text-lg font-medium text-slate-900 dark:text-white mb-4">Student Information</h4>
+            
+            <div className="space-y-4">
+              <div className="flex justify-between items-center py-3 border-b border-slate-200 dark:border-slate-700">
+                <span className="text-slate-600 dark:text-slate-400">Name:</span>
+                <span className="font-medium text-slate-900 dark:text-white">{result.name}</span>
               </div>
               
-              <div className="space-y-4">
-                <div className="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-university-blue rounded-md flex items-center justify-center">
-                        <User className="h-4 w-4 text-white" />
-                      </div>
-                      <span className="text-university-gray dark:text-slate-300 font-medium">Full Name:</span>
-                    </div>
-                    <span className="font-semibold text-slate-900 dark:text-slate-100">{result.name}</span>
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-university-navy rounded-md flex items-center justify-center">
-                        <Hash className="h-4 w-4 text-white" />
-                      </div>
-                      <span className="text-university-gray dark:text-slate-300 font-medium">T.U. Registration:</span>
-                    </div>
-                    <span className="font-semibold text-slate-900 dark:text-slate-100 font-mono">{result.tuRegd}</span>
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-8 h-8 bg-academic-green rounded-md flex items-center justify-center">
-                        <Shield className="h-4 w-4 text-white" />
-                      </div>
-                      <span className="text-university-gray dark:text-slate-300 font-medium">Result Status:</span>
-                    </div>
-                    <Badge className={`px-4 py-2 text-sm font-semibold ${
-                      result.result === "Passed" 
-                        ? "bg-academic-green text-white" 
-                        : "bg-academic-red text-white"
-                    }`}>
-                      {result.result}
-                    </Badge>
-                  </div>
-                </div>
+              <div className="flex justify-between items-center py-3 border-b border-slate-200 dark:border-slate-700">
+                <span className="text-slate-600 dark:text-slate-400">Registration:</span>
+                <span className="font-medium text-slate-900 dark:text-white font-mono">{result.tuRegd}</span>
               </div>
               
-              <div className="pt-6 space-y-3">
-                <Button
-                  onClick={handleDownload}
-                  className="w-full h-12 text-base font-semibold bg-university-blue hover:bg-university-navy text-white rounded-lg shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200"
-                >
-                  <Download className="h-5 w-5 mr-3" />
-                  Download Official PDF
-                </Button>
-                <Button
-                  onClick={handlePreview}
-                  variant="outline"
-                  className="w-full h-12 text-base font-semibold border-2 border-university-blue text-university-blue hover:bg-university-blue hover:text-white rounded-lg transition-all duration-200"
-                >
-                  <Eye className="h-5 w-5 mr-3" />
-                  View Full Marksheet
-                </Button>
+              <div className="flex justify-between items-center py-3 border-b border-slate-200 dark:border-slate-700">
+                <span className="text-slate-600 dark:text-slate-400">Result:</span>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  result.result === "Passed" 
+                    ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" 
+                    : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                }`}>
+                  {result.result}
+                </span>
               </div>
             </div>
             
-            {/* Marksheet Preview */}
-            <div className="space-y-6">
-              <div className="flex items-center space-x-3 mb-6">
-                <div className="w-10 h-10 bg-university-navy rounded-lg flex items-center justify-center">
-                  <Eye className="h-5 w-5 text-white" />
-                </div>
-                <h4 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Marksheet Preview</h4>
-              </div>
-              
-              <div className="border-2 border-slate-200 dark:border-slate-600 rounded-xl overflow-hidden bg-white dark:bg-slate-800 shadow-md">
-                <div className="h-80 lg:h-96 relative">
-                  <img 
-                    src={`/api/preview/${result.id}`} 
-                    alt="Marksheet preview"
-                    className="w-full h-full object-contain p-4"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.style.display = 'none';
-                      const errorDiv = target.nextElementSibling as HTMLElement;
-                      if (errorDiv) errorDiv.style.display = 'flex';
-                    }}
-                  />
-                  <div className="hidden h-full w-full flex items-center justify-center text-center text-university-gray dark:text-slate-400">
-                    <div className="space-y-4">
-                      <div className="w-16 h-16 bg-university-blue rounded-xl flex items-center justify-center mx-auto">
-                        <Eye className="h-8 w-8 text-white" />
-                      </div>
-                      <div>
-                        <p className="font-semibold text-lg">Preview not available</p>
-                        <p className="text-sm">Use download to view the document</p>
-                      </div>
+            <div className="pt-4 space-y-3">
+              <Button
+                onClick={handleDownload}
+                className="w-full h-11 text-base bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Download PDF
+              </Button>
+              <Button
+                onClick={handlePreview}
+                variant="outline"
+                className="w-full h-11 text-base border-slate-300 dark:border-slate-600 rounded-md"
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                View Preview
+              </Button>
+            </div>
+          </div>
+          
+          {/* Preview */}
+          <div className="space-y-4">
+            <h4 className="text-lg font-medium text-slate-900 dark:text-white">Document Preview</h4>
+            
+            <div className="border border-slate-200 dark:border-slate-600 rounded-md overflow-hidden bg-slate-50 dark:bg-slate-700/50">
+              <div className="h-80 relative">
+                <img 
+                  src={`/api/preview/${result.id}`} 
+                  alt="Marksheet preview"
+                  className="w-full h-full object-contain p-4"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    const errorDiv = target.nextElementSibling as HTMLElement;
+                    if (errorDiv) errorDiv.style.display = 'flex';
+                  }}
+                />
+                <div className="hidden h-full w-full flex items-center justify-center text-center">
+                  <div className="space-y-3">
+                    <Eye className="h-12 w-12 text-slate-400 mx-auto" />
+                    <div>
+                      <p className="font-medium text-slate-600 dark:text-slate-400">Preview unavailable</p>
+                      <p className="text-sm text-slate-500 dark:text-slate-500">Download to view document</p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

@@ -27,6 +27,7 @@ import { useToast } from "@/hooks/use-toast";
 import { authManager } from "@/lib/auth";
 import FileUpload from "@/components/file-upload";
 import AdminManagement from "@/components/admin-management";
+import ActivityTracker from "@/components/activity-tracker";
 import { type StudentRecord } from "@shared/schema";
 import universityLogo from "@/assets/university-logo.png";
 
@@ -182,7 +183,7 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm">
+          <TabsList className="grid w-full grid-cols-5 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm">
             <TabsTrigger value="overview" className="flex items-center space-x-2">
               <BarChart3 className="h-4 w-4" />
               <span>Overview</span>
@@ -194,6 +195,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="records" className="flex items-center space-x-2">
               <FileText className="h-4 w-4" />
               <span>Student Records</span>
+            </TabsTrigger>
+            <TabsTrigger value="activity" className="flex items-center space-x-2">
+              <Eye className="h-4 w-4" />
+              <span>Activity</span>
             </TabsTrigger>
             <TabsTrigger value="admin" className="flex items-center space-x-2">
               <Settings className="h-4 w-4" />
@@ -499,6 +504,14 @@ export default function AdminDashboard() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="activity" className="space-y-6">
+            <ActivityTracker />
+          </TabsContent>
+
+          <TabsContent value="admin" className="space-y-6">
+            <AdminManagement />
           </TabsContent>
         </Tabs>
       </div>

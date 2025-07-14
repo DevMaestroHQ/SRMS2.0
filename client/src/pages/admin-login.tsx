@@ -1,14 +1,15 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
-import { LogIn, Shield, Mail, Lock, Key } from "lucide-react";
+import { LogIn, Info } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { authManager } from "@/lib/auth";
-import { loginSchema, type LoginCredentials } from "@shared/schema";
+import type { LoginCredentials } from "@shared/schema";
+import { loginSchema } from "@shared/schema";
 import universityLogo from "@/assets/university-logo.png";
 
 interface AdminLoginProps {
@@ -49,137 +50,111 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
   };
 
   return (
-    <div className="max-w-lg mx-auto animate-slide-up">
-      <div className="text-center mb-12">
-        <div className="flex justify-center mb-8">
-          <div className="relative">
-            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center shadow-vibrant floating-animation">
-              <img 
-                src={universityLogo} 
-                alt="Tribhuvan University Logo" 
-                className="h-12 w-12 object-contain"
-              />
-            </div>
-            <div className="absolute -top-3 -right-3 w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center pulse-animation">
-              <Key className="h-5 w-5 text-white" />
-            </div>
-          </div>
-        </div>
-        <h2 className="responsive-text-3xl font-bold mb-4">
-          <span className="bg-gradient-to-r from-purple-600 via-blue-600 to-pink-600 bg-clip-text text-transparent">
-            Tribhuvan University
-          </span>
-        </h2>
-        <h3 className="responsive-text-xl font-bold text-foreground mb-3">Admin Access Portal</h3>
-        <p className="text-muted-foreground responsive-text-lg leading-relaxed">
-          Secure authentication for result management system
-        </p>
-      </div>
-
-      <div className="modern-card hover-lift p-8 md:p-10 relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-500/20 via-blue-500/20 to-pink-500/20"></div>
-          <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-gradient-radial from-purple-500/10 to-transparent rounded-full"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-radial from-blue-500/10 to-transparent rounded-full"></div>
-        </div>
-
-        {/* Header */}
-        <div className="text-center mb-8 relative z-10">
-          <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center shadow-lg">
-              <Shield className="h-8 w-8 text-white" />
-            </div>
-          </div>
-          <h4 className="responsive-text-2xl font-bold text-foreground mb-2">Administrator Login</h4>
-          <p className="text-muted-foreground text-lg">Enter your credentials to access the dashboard</p>
-        </div>
-        
-        <div className="relative z-10">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-lg font-bold text-foreground flex items-center gap-3 mb-3">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
-                        <Mail className="h-4 w-4 text-white" />
-                      </div>
-                      Email Address
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          {...field}
-                          type="email"
-                          placeholder="admin@university.edu"
-                          className="h-14 text-lg px-6 rounded-2xl border-2 border-transparent bg-white/80 dark:bg-card/80 backdrop-blur-sm focus:bg-white dark:focus:bg-card focus:border-purple-500 focus:ring-4 focus:ring-purple-500/20 shadow-lg transition-all duration-300 placeholder:text-muted-foreground/60"
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-lg font-bold text-foreground flex items-center gap-3 mb-3">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
-                        <Lock className="h-4 w-4 text-white" />
-                      </div>
-                      Password
-                    </FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          {...field}
-                          type="password"
-                          placeholder="••••••••"
-                          className="h-14 text-lg px-6 rounded-2xl border-2 border-transparent bg-white/80 dark:bg-card/80 backdrop-blur-sm focus:bg-white dark:focus:bg-card focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 shadow-lg transition-all duration-300 placeholder:text-muted-foreground/60"
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              
-              <div className="pt-4">
-                <Button
-                  type="submit"
-                  disabled={loginMutation.isPending}
-                  className="w-full h-14 text-lg font-bold bg-gradient-to-r from-purple-600 via-blue-600 to-pink-600 hover:from-purple-700 hover:via-blue-700 hover:to-pink-700 text-white rounded-2xl shadow-vibrant hover:shadow-2xl transform hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                >
-                  {loginMutation.isPending ? (
-                    <>
-                      <div className="animate-spin rounded-full h-6 w-6 border-3 border-white border-t-transparent mr-3"></div>
-                      Authenticating...
-                    </>
-                  ) : (
-                    <>
-                      <LogIn className="h-6 w-6 mr-3" />
-                      Access Dashboard
-                    </>
-                  )}
-                </Button>
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
+      <div className="w-full max-w-md">
+        <Card className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-lg">
+          <CardHeader className="text-center space-y-4 pb-6">
+            <div className="flex justify-center">
+              <div className="w-16 h-16 rounded-xl bg-blue-600 flex items-center justify-center">
+                <img 
+                  src={universityLogo} 
+                  alt="University Logo" 
+                  className="h-8 w-8 object-contain"
+                />
               </div>
-            </form>
-          </Form>
+            </div>
+            <div>
+              <CardTitle className="text-xl font-semibold text-slate-900 dark:text-white">Admin Login</CardTitle>
+              <CardDescription className="text-slate-600 dark:text-slate-400">
+                Access the admin dashboard
+              </CardDescription>
+            </div>
+          </CardHeader>
           
-          <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl border-2 border-blue-200 dark:border-blue-500/20">
-            <p className="text-muted-foreground text-center font-medium">
-              {process.env.NODE_ENV === "development" 
-                ? "Development credentials: admin@university.edu / admin123" 
-                : "Contact administrator for login credentials"}
-            </p>
-          </div>
-        </div>
+          <CardContent className="space-y-6">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                        Email
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          type="email"
+                          placeholder="Enter your email"
+                          className="h-11 px-4 text-base border border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-600 text-sm" />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                        Password
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          type="password"
+                          placeholder="Enter your password"
+                          className="h-11 px-4 text-base border border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md"
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-600 text-sm" />
+                    </FormItem>
+                  )}
+                />
+                
+                <div className="pt-2">
+                  <Button 
+                    type="submit" 
+                    disabled={loginMutation.isPending}
+                    className="w-full h-11 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md"
+                  >
+                    {loginMutation.isPending ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2" />
+                        Signing in...
+                      </>
+                    ) : (
+                      <>
+                        <LogIn className="h-4 w-4 mr-2" />
+                        Sign In
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </form>
+            </Form>
+            
+            {/* Default Credentials Info - Only show in development */}
+            {import.meta.env.DEV && (
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+                <div className="flex items-start space-x-3">
+                  <Info className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-medium text-slate-900 dark:text-white mb-1">Development Access:</p>
+                    <div className="space-y-1 text-slate-600 dark:text-slate-400">
+                      <p>Email: admin@university.edu.np</p>
+                      <p>Password: admin123</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

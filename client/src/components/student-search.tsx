@@ -54,27 +54,26 @@ export default function StudentSearch({ onResultFound }: StudentSearchProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-2xl mx-auto">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          <div className="space-y-6">
             <FormField
               control={form.control}
               name="name"
               render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel className="text-slate-900 dark:text-slate-100 font-semibold flex items-center text-sm">
-                    <User className="h-4 w-4 mr-2 text-university-blue" />
-                    Student Full Name
+                <FormItem className="space-y-2">
+                  <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                    Full Name
                   </FormLabel>
                   <FormControl>
                     <Input 
                       {...field} 
                       placeholder="Enter your complete name"
-                      className="h-12 text-base bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:border-university-blue dark:focus:border-university-blue transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-600 rounded-lg"
+                      className="h-11 px-4 text-base border border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md bg-white dark:bg-slate-800"
                     />
                   </FormControl>
-                  <FormMessage className="text-academic-red" />
+                  <FormMessage className="text-red-600 text-sm" />
                 </FormItem>
               )}
             />
@@ -83,46 +82,45 @@ export default function StudentSearch({ onResultFound }: StudentSearchProps) {
               control={form.control}
               name="tuRegd"
               render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel className="text-slate-900 dark:text-slate-100 font-semibold flex items-center text-sm">
-                    <Hash className="h-4 w-4 mr-2 text-university-blue" />
+                <FormItem className="space-y-2">
+                  <FormLabel className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     T.U. Registration Number
                   </FormLabel>
                   <FormControl>
                     <Input 
                       {...field} 
                       placeholder="Enter your registration number"
-                      className="h-12 text-base bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 focus:border-university-blue dark:focus:border-university-blue transition-all duration-200 hover:border-slate-300 dark:hover:border-slate-600 rounded-lg font-mono"
+                      className="h-11 px-4 text-base border border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 rounded-md bg-white dark:bg-slate-800 font-mono"
                     />
                   </FormControl>
-                  <FormMessage className="text-academic-red" />
+                  <FormMessage className="text-red-600 text-sm" />
                 </FormItem>
               )}
             />
           </div>
           
-          <div className="text-center pt-6">
+          <div className="pt-4">
             <Button 
               type="submit" 
               disabled={searchMutation.isPending}
-              className="px-8 py-3 text-base font-semibold bg-university-blue hover:bg-university-navy text-white border-0 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 rounded-lg min-w-[200px]"
+              className="w-full h-12 text-base font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-md"
             >
               {searchMutation.isPending ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-3" />
-                  Searching Records...
+                  <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-2" />
+                  Searching...
                 </>
               ) : (
                 <>
-                  <Search className="h-5 w-5 mr-3" />
-                  Search My Results
+                  <Search className="h-5 w-5 mr-2" />
+                  Search Results
                 </>
               )}
             </Button>
           </div>
           
-          <div className="text-center text-sm text-university-gray dark:text-slate-400">
-            <p>Need help? Contact the university administration office.</p>
+          <div className="text-center text-sm text-slate-600 dark:text-slate-400 pt-2">
+            <p>Contact university administration for assistance</p>
           </div>
         </form>
       </Form>

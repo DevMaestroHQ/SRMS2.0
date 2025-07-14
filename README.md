@@ -25,6 +25,8 @@ This system provides a comprehensive solution for university result management, 
 - 🤖 **OCR Processing**: Real-time text extraction from uploaded images
 - 📊 **Dashboard**: View and manage all student records
 - 🗑️ **Record Management**: Delete and update student information
+- 👥 **Admin Management**: Create new admin users and change passwords
+- 📈 **Activity Tracker**: Monitor system activity and user actions
 
 ### Technical Features
 - ⚡ **Real-time Processing**: Live OCR results with progress tracking
@@ -73,6 +75,83 @@ This system provides a comprehensive solution for university result management, 
    ```
 
 2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your database URL and other settings
+   ```
+
+4. **Initialize the database**
+   ```bash
+   npm run db:push
+   ```
+
+5. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+The application will be available at `http://localhost:5000`
+
+## 🔐 Admin Credentials
+
+### Default Admin Access
+For development and testing purposes, the system comes with a default admin account:
+
+- **Email**: `admin@university.edu.np`
+- **Password**: `admin123`
+
+### Admin Management Features
+The admin dashboard provides comprehensive user management:
+
+1. **Create New Admin Users**
+   - Navigate to Admin Dashboard → Admin Management
+   - Use the "Add New Admin" form to create additional administrators
+   - Provide full name, email, and secure password
+
+2. **Change Admin Password**
+   - Current admin users can update their passwords
+   - Use the "Change Password" form in Admin Management
+   - Requires current password verification
+
+3. **Security Best Practices**
+   - Change the default admin password immediately in production
+   - Use strong, unique passwords for all admin accounts
+   - Regularly update admin credentials
+   - Monitor admin activity through the Activity Tracker
+
+### Production Setup
+For production deployment:
+
+1. **Change Default Credentials**
+   ```bash
+   # Set production admin credentials via environment variables
+   ADMIN_EMAIL=your-admin@university.edu
+   ADMIN_PASSWORD=your-secure-password
+   ```
+
+2. **Update Admin Information**
+   - Log in with default credentials
+   - Navigate to Admin Management
+   - Change password immediately
+   - Create additional admin users as needed
+   - Delete or disable default account if not needed
+
+## 📊 Activity Tracking
+
+The system includes comprehensive activity monitoring:
+
+- **Login Activity**: Track admin login sessions
+- **Upload Actions**: Monitor file uploads and processing
+- **Search Activity**: Log student search queries
+- **Download Tracking**: Record PDF downloads
+- **Admin Actions**: Log user management activities
+
+Access the Activity Tracker through the admin dashboard to monitor system usage and security.
    ```bash
    npm install
    ```
