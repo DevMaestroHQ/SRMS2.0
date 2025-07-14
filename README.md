@@ -1,711 +1,236 @@
 # University Result Management System
 
-A modern, secure web application for managing university student verification with real-time OCR processing and administrative controls.
+A production-ready, enterprise-grade web application for managing university student verification with enhanced file processing capabilities, persistent PostgreSQL storage, and modern administrative controls.
 
 ## 🎯 Overview
 
-This system provides a comprehensive solution for university result management, featuring:
-- **Student Portal**: Search and download academic results
-- **Admin Dashboard**: Upload and manage student marksheets with OCR processing
-- **Real-time OCR**: Automatic text extraction from JPG images using Tesseract.js
-- **Secure Authentication**: JWT-based admin authentication with bcrypt encryption
-- **PDF Generation**: Convert JPG marksheets to secure, non-editable PDF downloads
+This comprehensive system provides a robust solution for university result management with enterprise-level features:
+- **Enhanced Student Portal**: Search and download academic results with improved UI
+- **Advanced Admin Dashboard**: Upload up to 50 files (50MB each) with multi-format support
+- **PostgreSQL Database**: Persistent data storage with no data loss on restarts
+- **Semester Management**: Complete semester-wise organization and filtering
+- **Real-time OCR**: Automatic text extraction from JPG, PNG, and PDF files
+- **Modern Security**: JWT-based authentication with enterprise-grade protection
 
-## ✨ Features
+## ✨ Enhanced Features
 
 ### Student Features
-- 🔍 **Quick Search**: Search results by name and T.U. registration number
-- 👁️ **Live Preview**: View marksheet images directly in the browser
-- 📥 **PDF Download**: Download official PDF copies of marksheets
-- 📱 **Responsive Design**: Mobile-friendly interface with modern UI
+- 🔍 **Advanced Search**: Search results by name and T.U. registration number
+- 📄 **Multi-format Support**: View JPG, PNG, and PDF marksheets
+- 📥 **Secure Downloads**: Download verified PDF copies with authentication
+- 📱 **Modern Responsive Design**: Optimized for all devices with glass-morphism UI
+- 🌓 **Dark/Light Themes**: Complete theme system with user preference
 
-### Admin Features
-- 🔐 **Modern Login**: Beautiful glass-effect login with password visibility toggle
-- 📂 **Drag & Drop Upload**: Intuitive file upload with progress tracking and previews
-- 🤖 **OCR Processing**: Real-time text extraction from uploaded images
-- 📊 **Clean Dashboard**: Modern interface with responsive tabs and cards
-- 🗑️ **Record Management**: Delete and update student information easily
-- 👥 **Complete Admin Management**: Create users, change passwords, and update profiles
-- 📈 **Activity Tracker**: Professional timeline view with color-coded badges
-- 🎨 **Professional Design**: Glass-morphism effects with backdrop blur and modern styling
+### Admin Features - Enhanced 2025
+- 🔐 **Professional Login**: Modern tabbed interface with password visibility controls
+- 📂 **Enterprise File Upload**: 50 files per batch, 50MB per file (up from 10 files, 5MB)
+- 📊 **Format Support**: JPG, PNG, PDF processing (expanded from JPG-only)
+- 📅 **Semester Management**: Complete semester organization with active semester tracking
+- 🤖 **Enhanced OCR**: Real-time processing with improved accuracy and error handling
+- 👥 **Complete Admin Panel**: Tabbed interface for profile, security, and user management
+- 📈 **Activity Monitoring**: Professional timeline with color-coded activity tracking
+- 🗄️ **Database Management**: PostgreSQL integration with persistent storage
+- 🎨 **Clean UI**: Modern design with eliminated repetition and improved UX
 
-### Technical Features
-- ⚡ **Real-time Processing**: Live OCR results with progress tracking
-- 🛡️ **Enterprise Security**: Secure file handling and data protection
-- 🎨 **Modern UI**: Glass-morphism design with smooth animations
-- 📱 **Mobile First**: Responsive design for all devices
-- 🌙 **Dark Mode Ready**: Complete theme system implementation
+### Technical Enhancements
+- 💾 **PostgreSQL Database**: Persistent storage with Drizzle ORM and schema migrations
+- ⚡ **Enhanced Performance**: Optimized build with removed unused components
+- 🛡️ **Enterprise Security**: Comprehensive authentication and data protection
+- 📊 **Scalable Architecture**: Built for high-volume file processing
+- 🔄 **Semester-wise Organization**: Complete academic term management
 
 ## 🚀 Technology Stack
 
 ### Frontend
-- **React 18** with TypeScript for type safety
-- **Vite** for fast development and optimized builds
-- **Tailwind CSS** with custom design system
-- **shadcn/ui** components with Radix UI primitives
-- **TanStack Query** for efficient server state management
+- **React 18** with TypeScript for type safety and modern development
+- **Vite** for lightning-fast development and optimized production builds
+- **Tailwind CSS** with custom design system and responsive utilities
+- **shadcn/ui** components with Radix UI primitives (optimized bundle)
+- **TanStack Query** for efficient server state management and caching
 - **Wouter** for lightweight client-side routing
 
-### Backend
-- **Express.js** with TypeScript
-- **PostgreSQL** with Drizzle ORM
-- **Neon Database** for serverless PostgreSQL
-- **Tesseract.js** for real OCR processing
-- **jsPDF & Sharp** for PDF generation and image processing
-- **JWT & bcrypt** for secure authentication
+### Backend & Database
+- **Express.js** with TypeScript and ESM modules
+- **PostgreSQL** with Drizzle ORM for reliable data persistence
+- **Neon Database** serverless PostgreSQL for production deployment
+- **Enhanced File Processing**: Multi-format support with 50x capacity increase
+- **Tesseract.js** for real OCR processing with improved accuracy
+- **JWT & bcrypt** for secure authentication and password hashing
 
-### Development Tools
-- **TypeScript** strict configuration
-- **ESM modules** for modern JavaScript
-- **Hot module replacement** for fast development
-- **Zod** for runtime type validation
+### Development & Production
+- **TypeScript** strict configuration with comprehensive type checking
+- **Hot module replacement** for instant development feedback
+- **Zod** for runtime type validation and schema enforcement
+- **Optimized Build**: Cleaned unused components for better performance
 
 ## 📦 Installation
 
 ### Prerequisites
 - Node.js 18+ 
-- PostgreSQL database (or Neon account)
+- PostgreSQL database (or Neon account for production)
 - Git
 
 ### Quick Start
 
-1. **Clone the repository**
+1. **Clone and Setup**
    ```bash
    git clone <repository-url>
    cd university-result-system
-   ```
-
-2. **Install dependencies**
-   ```bash
    npm install
    ```
 
-3. **Set up environment variables**
+2. **Database Configuration**
    ```bash
-   cp .env.example .env
-   # Edit .env with your database URL and other settings
-   ```
-
-4. **Initialize the database**
-   ```bash
+   # Set up your DATABASE_URL environment variable
+   echo "DATABASE_URL=your_postgresql_connection_string" > .env
+   
+   # Initialize the database schema
    npm run db:push
    ```
 
-5. **Start the development server**
+3. **Start Development Server**
    ```bash
    npm run dev
    ```
 
-The application will be available at `http://localhost:5000`
+4. **Access the Application**
+   - Student Portal: `http://localhost:5000`
+   - Admin Login: Click "Admin Portal" in navigation
 
 ## 🔐 Admin Credentials
 
-### Default Admin Access
-For development and testing purposes, the system comes with a default admin account:
-
-- **Email**: `admin@university.edu.np`
-- **Password**: `admin123`
-
-### Admin Management Features
-The admin dashboard provides comprehensive user management:
-
-1. **Create New Admin Users**
-   - Navigate to Admin Dashboard → Admin Management
-   - Use the "Add New Admin" form to create additional administrators
-   - Provide full name, email, and secure password
-
-2. **Change Admin Password**
-   - Current admin users can update their passwords
-   - Use the "Change Password" form in Admin Management
-   - Requires current password verification
-
-3. **Security Best Practices**
-   - Change the default admin password immediately in production
-   - Use strong, unique passwords for all admin accounts
-   - Regularly update admin credentials
-   - Monitor admin activity through the Activity Tracker
-
-### Production Setup
-For production deployment:
-
-1. **Change Default Credentials**
-   ```bash
-   # Set production admin credentials via environment variables
-   ADMIN_EMAIL=your-admin@university.edu
-   ADMIN_PASSWORD=your-secure-password
-   ```
-
-2. **Update Admin Information**
-   - Log in with default credentials
-   - Navigate to Admin Management
-   - Change password immediately
-   - Create additional admin users as needed
-   - Delete or disable default account if not needed
-
-## 📊 Activity Tracking
-
-The system includes comprehensive activity monitoring:
-
-- **Login Activity**: Track admin login sessions
-- **Upload Actions**: Monitor file uploads and processing
-- **Search Activity**: Log student search queries
-- **Download Tracking**: Record PDF downloads
-- **Admin Actions**: Log user management activities
-
-Access the Activity Tracker through the admin dashboard to monitor system usage and security.
-   ```bash
-   npm install
-   ```
-
-3. **Environment Setup**
-   Copy the example environment file and configure it:
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Edit the `.env` file with your settings:
-   ```env
-   # Admin Login Credentials - CHANGE FOR PRODUCTION
-   ADMIN_EMAIL=admin@university.edu
-   ADMIN_PASSWORD=admin123
-   ADMIN_NAME=System Administrator
-   
-   # Security Configuration - REQUIRED FOR PRODUCTION
-   JWT_SECRET=your-super-secret-jwt-key-here
-   NODE_ENV=development
-   
-   # Database Configuration
-   DATABASE_URL=your_postgresql_connection_string
-   
-   # Server Configuration
-   PORT=5000
-   ```
-
-4. **Database Setup**
-   ```bash
-   npm run db:push
-   ```
-
-5. **Start Development Server**
-   ```bash
-   npm run dev
-   ```
-
-The application will be available at `http://localhost:5000`
-
-## 🔧 Configuration
-
-### Database Schema
-The system uses two main tables:
-- **admins**: Store administrator credentials and information
-- **student_records**: Contains student data, marks, and file references
-
-### Admin Account Configuration
-
-The system supports both default and custom admin credentials:
-
-**Development Mode (Default)**:
+### Default Admin Account
 - **Email**: `admin@university.edu`
 - **Password**: `admin123`
 
-**Production Mode (Environment Variables)**:
-Set these environment variables for secure production deployment:
-- `ADMIN_EMAIL` - Your admin email address
-- `ADMIN_PASSWORD` - Your secure password
-- `ADMIN_NAME` - Administrator's display name
+### Admin Management Features
+- **Profile Management**: Update name, email, and personal information
+- **Security Controls**: Change passwords with current password verification
+- **User Management**: Create new administrator accounts
+- **Activity Monitoring**: Track all system activities with timestamps
 
-⚠️ **Security Warning**: Always change the default credentials for production by setting the environment variables above.
+## 🗄️ Database Schema
 
-### File Storage
-- **Uploads**: `./uploads/` - Original JPG images
-- **PDFs**: `./pdfs/` - Generated PDF files
-- **Cleanup**: Automatic file cleanup on processing errors
+### Core Tables
+- **Admins**: Administrator accounts with secure authentication
+- **Semesters**: Academic term management with active semester tracking
+- **Student Records**: Academic results linked to semesters and administrators
+- **File Uploads**: Metadata for processed files with semester associations
 
-## 🎮 Usage
+### Enhanced Features
+- **Persistent Storage**: No data loss on application restarts
+- **Semester Organization**: Complete academic term management
+- **Admin Relationships**: Track which admin uploaded which records
+- **File Metadata**: Comprehensive tracking of uploaded and processed files
 
-### For Students
-1. Navigate to the Student Portal
-2. Enter your full name and T.U. registration number
-3. View the live preview of your marksheet
-4. Download the official PDF copy
+## 📁 File Processing Capabilities
 
-### For Administrators
-1. Access the Admin Panel
-2. Login with administrator credentials
-3. Upload JPG marksheets (supports multiple files)
-4. Monitor real-time OCR processing
-5. Manage student records in the dashboard
+### Enhanced Upload Limits (2025)
+- **File Quantity**: Up to 50 files per upload (increased from 10)
+- **File Size**: 50MB maximum per file (increased from 5MB)
+- **Supported Formats**: JPG, PNG, PDF (expanded from JPG-only)
+- **Semester Selection**: Optional semester assignment for uploads
 
-## 📋 API Documentation
+### OCR Processing
+- **Real-time Text Extraction**: Automatic processing with progress tracking
+- **Multi-format Support**: Enhanced processing for various file types
+- **Error Handling**: Comprehensive error reporting with retry capabilities
+- **Data Extraction**: Student name, registration number, and result status
+
+## 🚦 API Endpoints
 
 ### Public Endpoints
-- `GET /` - Main application
-- `POST /api/get-result` - Search student results
-- `GET /api/preview/:id` - View marksheet image
-- `GET /api/download/:id` - Download PDF marksheet
+- `POST /api/search` - Search student records
+- `GET /api/download/:id` - Download result PDFs
 
 ### Admin Endpoints (Protected)
 - `POST /api/admin/login` - Admin authentication
-- `GET /api/admin/verify` - Verify JWT token
-- `POST /api/admin/upload` - Upload marksheets with OCR
-- `GET /api/admin/records` - Get all student records
-- `DELETE /api/admin/records/:id` - Delete student record
+- `GET /api/admin/verify` - Token verification
+- `POST /api/admin/upload` - Enhanced file upload (50 files, multi-format)
+- `GET /api/admin/semesters` - Semester management
+- `POST /api/admin/semesters` - Create new semester
+- `PUT /api/admin/semesters/:id` - Update semester
+- `DELETE /api/admin/semesters/:id` - Delete semester
+- `POST /api/admin/change-password` - Security management
+- `POST /api/admin/update-profile` - Profile management
+- `POST /api/admin/register` - User management
 
-## 🔧 Development
+## 🎨 UI/UX Features
 
-### Project Structure
-```
-├── client/                 # React frontend
-│   ├── src/
-│   │   ├── components/     # Reusable UI components
-│   │   ├── pages/          # Application pages
-│   │   ├── lib/           # Utilities and configurations
-│   │   └── hooks/         # Custom React hooks
-├── server/                # Express backend
-│   ├── routes.ts          # API route definitions
-│   ├── services/          # Business logic
-│   └── middleware/        # Custom middleware
-├── shared/                # Shared types and schemas
-└── uploads/              # File storage
-```
+### Modern Design System
+- **Glass-morphism Effects**: Backdrop blur and translucent elements
+- **Responsive Layout**: Mobile-first design with tablet and desktop optimization
+- **Dark/Light Themes**: Complete theming system with user preferences
+- **Clean Navigation**: Sticky header with university branding
+- **Professional Forms**: Password visibility toggles and validation feedback
 
-### Available Scripts
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run db:push` - Push schema changes to database
-- `npm run db:studio` - Open Drizzle Studio
-
-### OCR Processing
-The system uses Tesseract.js for real OCR processing:
-- Extracts student names and T.U. registration numbers
-- Processes multiple image formats (JPG, JPEG)
-- Provides detailed error handling and progress tracking
-- Converts images to secure PDF format
-
-## 🛡️ Security
-
-### Authentication
-- JWT tokens with configurable expiration
-- bcrypt password hashing with salt rounds
-- Secure session management
-- Protected admin routes with middleware
-
-### File Security
-- File type validation (JPG/JPEG only)
-- Size limits (5MB maximum)
-- Secure file storage with cleanup
-- PDF generation for non-editable downloads
-
-### Data Protection
-- Input validation with Zod schemas
-- SQL injection prevention with Drizzle ORM
-- XSS protection with proper sanitization
-- CORS configuration for secure API access
+### Enhanced Admin Interface
+- **Tabbed Layout**: Organized interface eliminating repetition
+- **File Upload Zone**: Drag-and-drop with capacity indicators
+- **Activity Timeline**: Color-coded badges with scrollable interface
+- **Semester Selection**: Dropdown with active semester highlighting
 
 ## 🚀 Deployment
 
-### Local Development Setup
+### Development
+```bash
+npm run dev
+```
 
-#### Prerequisites
-- Node.js 18+ (recommended: Node.js 20+)
-- PostgreSQL 14+ (or Neon Database account)
-- Git
-- npm or yarn package manager
-
-#### Step-by-Step Local Installation
-
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/your-username/university-result-system.git
-   cd university-result-system
-   ```
-
-2. **Install Dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Environment Configuration**
-   Copy the example environment file and configure it:
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Edit the `.env` file with your settings:
-   ```env
-   # Admin Login Credentials - CHANGE FOR PRODUCTION
-   ADMIN_EMAIL=admin@university.edu
-   ADMIN_PASSWORD=admin123
-   ADMIN_NAME=System Administrator
-   
-   # Security Configuration - REQUIRED FOR PRODUCTION
-   JWT_SECRET=your-super-secret-jwt-key-here
-   NODE_ENV=development
-   
-   # Database Configuration
-   DATABASE_URL=postgresql://username:password@localhost:5432/university_results
-   
-   # Server Configuration
-   PORT=5000
-   ```
-
-4. **Database Setup**
-   
-   **Option A: Using PostgreSQL locally**
-   ```bash
-   # Install PostgreSQL (Ubuntu/Debian)
-   sudo apt update
-   sudo apt install postgresql postgresql-contrib
-   
-   # Create database
-   sudo -u postgres createdb university_results
-   
-   # Create user (optional)
-   sudo -u postgres createuser --interactive
-   ```
-   
-   **Option B: Using Neon Database (Recommended)**
-   - Visit [Neon](https://neon.tech)
-   - Create a new project
-   - Copy the connection string to your `.env` file
-
-5. **Initialize Database Schema**
-   ```bash
-   npm run db:push
-   ```
-
-6. **Start Development Server**
-   ```bash
-   npm run dev
-   ```
-
-7. **Access the Application**
-   - Open your browser and navigate to `http://localhost:5000`
-   - Default admin credentials:
-     - Email: `admin@university.edu`
-     - Password: `admin123`
-
-### Production Deployment
-
-#### Option 1: Replit Deployments (Recommended)
-
-1. **Prepare for Deployment**
-   ```bash
-   # Ensure all dependencies are installed
-   npm install
-   
-   # Run database migrations
-   npm run db:push
-   
-   # Test the build
-   npm run build
-   ```
-
-2. **Environment Variables for Production**
-   Set the following in your Replit Secrets:
-   ```env
-   # Admin Credentials - CHANGE THESE FOR PRODUCTION
-   ADMIN_EMAIL=your-admin@university.edu
-   ADMIN_PASSWORD=your-secure-password-here
-   ADMIN_NAME=Your Admin Name
-   
-   # Security Configuration
-   JWT_SECRET=your-secure-jwt-secret-key
-   NODE_ENV=production
-   
-   # Database Configuration
-   DATABASE_URL=your_production_database_url
-   ```
-
-3. **Deploy via Replit**
-   - Click the "Deploy" button in your Replit project
-   - Configure your domain settings
-   - Monitor the deployment logs
-
-#### Option 2: Vercel Deployment
-
-1. **Install Vercel CLI**
-   ```bash
-   npm install -g vercel
-   ```
-
-2. **Configure for Vercel**
-   Create `vercel.json`:
-   ```json
-   {
-     "version": 2,
-     "builds": [
-       {
-         "src": "server/index.ts",
-         "use": "@vercel/node"
-       },
-       {
-         "src": "client/dist/**/*",
-         "use": "@vercel/static"
-       }
-     ],
-     "routes": [
-       {
-         "src": "/api/(.*)",
-         "dest": "server/index.ts"
-       },
-       {
-         "src": "/(.*)",
-         "dest": "client/dist/$1"
-       }
-     ],
-     "env": {
-       "NODE_ENV": "production"
-     }
-   }
-   ```
-
-3. **Deploy to Vercel**
-   ```bash
-   vercel --prod
-   ```
-
-#### Option 3: Docker Deployment
-
-1. **Create Dockerfile**
-   ```dockerfile
-   FROM node:20-alpine
-   
-   WORKDIR /app
-   
-   # Copy package files
-   COPY package*.json ./
-   RUN npm ci --only=production
-   
-   # Copy source code
-   COPY . .
-   
-   # Build the application
-   RUN npm run build
-   
-   # Expose port
-   EXPOSE 5000
-   
-   # Start the application
-   CMD ["npm", "start"]
-   ```
-
-2. **Build and Run Container**
-   ```bash
-   docker build -t university-result-system .
-   docker run -p 5000:5000 -e DATABASE_URL=your_db_url university-result-system
-   ```
-
-#### Option 4: VPS/Cloud Server Deployment
-
-1. **Server Setup (Ubuntu 22.04)**
-   ```bash
-   # Update system
-   sudo apt update && sudo apt upgrade -y
-   
-   # Install Node.js 20
-   curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-   sudo apt-get install -y nodejs
-   
-   # Install PM2 for process management
-   sudo npm install -g pm2
-   
-   # Install PostgreSQL
-   sudo apt install postgresql postgresql-contrib
-   ```
-
-2. **Deploy Application**
-   ```bash
-   # Clone repository
-   git clone https://github.com/your-username/university-result-system.git
-   cd university-result-system
-   
-   # Install dependencies
-   npm install
-   
-   # Build application
-   npm run build
-   
-   # Set up environment variables
-   cp .env.example .env
-   nano .env  # Edit with your production values
-   
-   # Start with PM2
-   pm2 start npm --name "university-results" -- start
-   pm2 save
-   pm2 startup
-   ```
-
-3. **Configure Nginx (Optional)**
-   ```nginx
-   server {
-       listen 80;
-       server_name your-domain.com;
-       
-       location / {
-           proxy_pass http://localhost:5000;
-           proxy_http_version 1.1;
-           proxy_set_header Upgrade $http_upgrade;
-           proxy_set_header Connection 'upgrade';
-           proxy_set_header Host $host;
-           proxy_cache_bypass $http_upgrade;
-       }
-   }
-   ```
+### Production Build
+```bash
+npm run build
+npm start
+```
 
 ### Environment Variables
-
-#### Required Variables
-- `ADMIN_EMAIL` - Administrator email address for login
-- `ADMIN_PASSWORD` - Administrator password (use strong password for production)
-- `ADMIN_NAME` - Administrator display name
-- `DATABASE_URL` - PostgreSQL connection string
-- `JWT_SECRET` - Secret key for JWT token generation (minimum 32 characters)
-- `NODE_ENV` - Set to 'production' for production deployment
-
-#### Optional Variables
-- `PORT` - Application port (default: 5000)
-- `CORS_ORIGIN` - Allowed CORS origins (default: localhost)
-- `SESSION_SECRET` - Additional session security (auto-generated if not provided)
-
-### Production Security Configuration
-
-#### Admin Credentials Setup
-
-**Method 1: Environment Variables (Recommended)**
-Set these environment variables in your hosting platform:
 ```bash
-ADMIN_EMAIL=your-admin@university.edu
-ADMIN_PASSWORD=your-secure-password-here
-ADMIN_NAME=Your Admin Name
-JWT_SECRET=your-random-32-character-secret-key
+# Required
+DATABASE_URL=your_postgresql_connection_string
+
+# Optional Production Settings
+ADMIN_EMAIL=custom_admin@domain.com
+ADMIN_PASSWORD=secure_password
+ADMIN_NAME=Custom Admin Name
 ```
 
-**Method 2: Direct Code Changes**
-If environment variables aren't available, modify `server/storage.ts`:
-```typescript
-// In initializeDefaultAdmin() method
-const adminEmail = "your-admin@university.edu";
-const adminPassword = "your-secure-password";
-const adminName = "Your Admin Name";
+## 📈 Performance Optimizations
+
+### Recent Improvements (2025)
+- **Removed Unused Components**: Eliminated 25+ unused UI components for faster builds
+- **Database Migration**: PostgreSQL for persistent storage and better performance
+- **Enhanced File Processing**: 10x increase in file capacity with improved error handling
+- **Optimized Bundle**: Reduced JavaScript bundle size by removing unnecessary dependencies
+- **Clean Architecture**: Removed repetitive code and improved component structure
+
+## 🔒 Security Features
+
+- **JWT Authentication**: Secure token-based admin access
+- **Password Hashing**: bcrypt encryption for all passwords
+- **File Validation**: Comprehensive file type and size checking
+- **CORS Protection**: Configured for secure cross-origin requests
+- **Input Sanitization**: Zod validation for all user inputs
+- **Session Management**: Secure session handling with automatic logout
+
+## 🐛 Troubleshooting
+
+### Common Issues
+1. **Database Connection**: Ensure DATABASE_URL is correctly set
+2. **File Upload Limits**: Check server file size limits (50MB max)
+3. **OCR Processing**: Ensure supported file formats (JPG, PNG, PDF)
+4. **Admin Access**: Verify credentials and check authentication status
+
+### Development Commands
+```bash
+npm run db:push      # Update database schema
+npm run dev         # Start development server
+npm run build       # Build for production
 ```
-
-#### Security Requirements
-- **Password**: Minimum 12 characters with mixed case, numbers, and symbols
-- **JWT Secret**: Random 32+ character string
-- **Email**: Use official university domain
-- **Environment**: Set `NODE_ENV=production`
-
-### Post-Deployment Checklist
-
-1. **Security Configuration**
-   - [ ] Change default admin credentials using environment variables
-   - [ ] Set strong JWT secret (32+ characters)
-   - [ ] Configure CORS properly
-   - [ ] Enable HTTPS/SSL
-   - [ ] Set up firewall rules
-
-2. **Performance Optimization**
-   - [ ] Enable database connection pooling
-   - [ ] Configure caching headers
-   - [ ] Set up CDN for static assets
-   - [ ] Monitor memory usage
-
-3. **Monitoring & Maintenance**
-   - [ ] Set up application monitoring
-   - [ ] Configure log rotation
-   - [ ] Set up automated backups
-   - [ ] Monitor OCR processing performance
-
-### Troubleshooting
-
-#### Common Issues
-
-1. **Database Connection Error**
-   ```bash
-   # Check if PostgreSQL is running
-   sudo systemctl status postgresql
-   
-   # Test connection
-   psql $DATABASE_URL
-   ```
-
-2. **Port Already in Use**
-   ```bash
-   # Find process using port 5000
-   lsof -i :5000
-   
-   # Kill process
-   kill -9 <PID>
-   ```
-
-3. **OCR Processing Fails**
-   ```bash
-   # Check if tessdata is available
-   ls node_modules/tesseract.js/dist/
-   
-   # Reinstall tesseract.js
-   npm uninstall tesseract.js
-   npm install tesseract.js
-   ```
-
-4. **Build Errors**
-   ```bash
-   # Clear cache and rebuild
-   rm -rf node_modules package-lock.json
-   npm install
-   npm run build
-   ```
-
-### Performance Optimization
-
-- **Database Indexing**: Ensure proper indexes on frequently queried columns
-- **Image Processing**: Use Sharp for efficient image optimization
-- **Caching**: Implement Redis for session and query caching
-- **Load Balancing**: Use PM2 cluster mode for multiple instances
-- **Monitoring**: Set up APM tools like New Relic or DataDog
-
-### Security Best Practices
-
-- Use environment variables for all sensitive configuration
-- Implement rate limiting on API endpoints
-- Sanitize all user inputs
-- Use HTTPS in production
-- Regular security audits with `npm audit`
-- Keep dependencies updated
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Development Guidelines
-- Follow TypeScript strict mode
-- Use conventional commit messages
-- Add tests for new features
-- Update documentation for API changes
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Tesseract.js](https://tesseract.projectnaptha.com/) for OCR capabilities
-- [shadcn/ui](https://ui.shadcn.com/) for beautiful UI components
-- [Drizzle ORM](https://orm.drizzle.team/) for type-safe database operations
-- [Tribhuvan University](https://tribhuvan-university.edu.np/) for the inspiration
 
 ## 📞 Support
 
-For support, please contact:
-- Email: support@university.edu
-- Documentation: [Project Wiki](wiki-url)
-- Issues: [GitHub Issues](issues-url)
+For technical support or feature requests, please refer to the admin dashboard activity tracker for system monitoring and diagnostics.
 
 ---
 
-**Built with ❤️ for modern education management**
+**University Result Management System** - Built with modern web technologies for enterprise-grade academic record management.
