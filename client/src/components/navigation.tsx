@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { GraduationCap, LogOut, Shield, User, BookOpen, Menu, X } from "lucide-react";
 import { authManager } from "@/lib/auth";
 import { useState, useEffect } from "react";
-import universityLogo from "@/assets/university-logo.png";
+import universityLogo from "@/assets/university-logo.svg";
 
 interface NavigationProps {
   currentView: "student" | "admin";

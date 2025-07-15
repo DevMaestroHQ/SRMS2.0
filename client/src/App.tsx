@@ -13,6 +13,7 @@ import AdminLogin from "@/pages/admin-login";
 import AdminDashboard from "@/pages/admin-dashboard";
 import { authManager } from "@/lib/auth";
 import NotFound from "@/pages/not-found";
+import universityLogo from "@/assets/university-logo.svg";
 
 function Router() {
   const [currentView, setCurrentView] = useState<"student" | "admin">("student");
@@ -47,8 +48,17 @@ function Router() {
       <main className="flex-1 w-full">
         {currentView === "student" ? (
           <div className="container mx-auto px-4 py-12">
-            {/* Header */}
+            {/* Header with Logo */}
             <div className="text-center mb-12">
+              <div className="flex justify-center mb-6">
+                <div className="w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-gradient-to-br from-blue-600 to-blue-800 shadow-2xl flex items-center justify-center mb-4">
+                  <img 
+                    src={universityLogo} 
+                    alt="Tribhuvan University Logo" 
+                    className="h-16 w-16 md:h-20 md:w-20 object-contain"
+                  />
+                </div>
+              </div>
               <h1 className="md:text-4xl font-bold text-slate-900 dark:text-white mb-4 text-[40px]">
                 Tribhuvan University
               </h1>
