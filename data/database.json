@@ -1,0 +1,28 @@
+{
+  "admins": [
+    {
+      "id": 1,
+      "name": "System Administrator",
+      "email": "admin@university.edu",
+      "password": "$2b$10$ku7Jc/qP4OZJB7H9q7aVDO/iaS/wseHE8NtFW3UMErwGlp4kw/1B.",
+      "createdAt": "2025-07-15T08:58:14.644Z"
+    }
+  ],
+  "semesters": [
+    {
+      "id": 1,
+      "name": "Spring 2025",
+      "year": 2025,
+      "isActive": true,
+      "createdAt": "2025-07-15T08:58:14.645Z"
+    }
+  ],
+  "studentRecords": [],
+  "fileUploads": [],
+  "nextIds": {
+    "admin": 2,
+    "semester": 2,
+    "studentRecord": 1,
+    "fileUpload": 1
+  }
+}

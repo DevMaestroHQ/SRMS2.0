@@ -20,7 +20,7 @@ Preferred communication style: Simple, everyday language.
 
 ### Backend Architecture
 - **Express.js** with TypeScript for the REST API server
-- **PostgreSQL** database with Drizzle ORM for data persistence
+- **Local JSON file storage** for simplified development and deployment
 - **JWT-based authentication** for secure admin access
 - **Multer** for file upload handling
 - **Tesseract.js** for OCR text extraction from images
@@ -78,8 +78,7 @@ Preferred communication style: Simple, everyday language.
 ## External Dependencies
 
 ### Core Technologies
-- **PostgreSQL**: Primary database for persistent data storage
-- **Neon Database**: Serverless PostgreSQL provider for production
+- **Local JSON Storage**: File-based database for simplified development
 - **Tesseract.js**: OCR engine for text extraction
 - **Sharp**: Image processing library
 - **Canvas**: PDF generation capabilities
@@ -118,12 +117,11 @@ Preferred communication style: Simple, everyday language.
    - Monitoring and logging
 
 ### Environment Configuration
-- **DATABASE_URL**: PostgreSQL connection string
-- **JWT_SECRET**: Secret key for JWT token signing
-- **SESSION_SECRET**: Session encryption key
-- **ADMIN_EMAIL**: Default admin email address
-- **ADMIN_PASSWORD**: Default admin password
-- **ADMIN_NAME**: Default admin display name
+- **JWT_SECRET**: Secret key for JWT token signing (defaults provided)
+- **SESSION_SECRET**: Session encryption key (defaults provided)
+- **ADMIN_EMAIL**: Default admin email address (admin@university.edu)
+- **ADMIN_PASSWORD**: Default admin password (admin123)
+- **ADMIN_NAME**: Default admin display name (System Administrator)
 
 ### Security Considerations
 - All passwords are hashed using bcrypt
@@ -133,9 +131,17 @@ Preferred communication style: Simple, everyday language.
 - CORS configured for secure cross-origin requests
 
 ### File Storage
-- Uploaded images stored in `/uploads` directory
-- Generated PDFs stored in `/pdfs` directory
-- File size limits enforced (50MB per file)
-- Supported formats: JPG, PNG, PDF
+- **Database**: All data stored in `data/database.json` file
+- **Uploaded images**: Stored in `/uploads` directory
+- **Generated PDFs**: Stored in `/pdfs` directory
+- **File size limits**: 50MB per file enforced
+- **Supported formats**: JPG, PNG, PDF
 
-The system is designed for high availability, scalability, and security, making it suitable for production use in educational institutions.
+### Local Development Benefits
+- **No external dependencies**: Runs completely offline
+- **Easy setup**: No database installation required
+- **Instant start**: Clone and run with `npm run dev`
+- **Portable**: All data in JSON file for easy backup
+- **Debug-friendly**: Human-readable data format
+
+The system is designed for easy local development and can be deployed to any platform that supports Node.js applications.
