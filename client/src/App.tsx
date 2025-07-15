@@ -44,13 +44,12 @@ function Router() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-blue-900/10 dark:to-indigo-900/10">
       <Navigation currentView={currentView} onViewChange={handleViewChange} />
-      
       <main className="flex-1 w-full">
         {currentView === "student" ? (
           <div className="container mx-auto px-4 py-12">
             {/* Header */}
             <div className="text-center mb-12">
-              <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">
+              <h1 className="md:text-4xl font-bold text-slate-900 dark:text-white mb-4 text-[40px]">
                 Tribhuvan University
               </h1>
               <p className="text-lg text-slate-600 dark:text-slate-400 mb-2">
@@ -126,7 +125,6 @@ function Router() {
           </div>
         )}
       </main>
-
       <Footer />
     </div>
   );
