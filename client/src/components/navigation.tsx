@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { GraduationCap, LogOut, Shield, User, BookOpen, Menu, X } from "lucide-react";
 import { authManager } from "@/lib/auth";
 import { useState, useEffect } from "react";
-import universityLogo from "@/assets/university-logo.svg";
+import universityLogo from "@assets/image_1752575762280.png";
 
 interface NavigationProps {
   currentView: "student" | "admin";
@@ -40,11 +40,11 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
           {/* Logo and Title */}
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 shadow-lg flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-white shadow-lg flex items-center justify-center p-1">
                 <img 
                   src={universityLogo} 
                   alt="Tribhuvan University Logo" 
-                  className="h-8 w-8 object-contain"
+                  className="h-10 w-10 object-contain"
                 />
               </div>
               <div className="hidden sm:block">
@@ -182,11 +182,11 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
       <div className="bg-gradient-to-r from-blue-50 to-slate-50 dark:from-slate-800 dark:to-slate-900 py-2 border-t border-slate-200/50 dark:border-slate-700/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center space-x-2">
-            <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-blue-600 to-blue-700 shadow-sm flex items-center justify-center">
+            <div className="w-6 h-6 rounded-lg bg-white shadow-sm flex items-center justify-center p-0.5">
               <img 
                 src={universityLogo} 
                 alt="Tribhuvan University Logo" 
-                className="h-4 w-4 object-contain"
+                className="h-5 w-5 object-contain"
               />
             </div>
             <span className="text-xs font-medium text-slate-600 dark:text-slate-400">
