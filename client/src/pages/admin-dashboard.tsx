@@ -29,6 +29,8 @@ import FileUpload from "@/components/file-upload";
 import AdminManagement from "@/components/admin-management";
 import ActivityTracker from "@/components/activity-tracker";
 import SemesterManagement from "@/components/semester-management";
+import EnhancedSemesterManagement from "@/components/enhanced-semester-management";
+import EnhancedAdminDashboard from "@/components/enhanced-admin-dashboard";
 import { type StudentRecord } from "@shared/schema";
 import universityLogo from "@/assets/university-logo.png";
 
@@ -122,54 +124,51 @@ export default function AdminDashboard() {
     window.open(`/api/download/${recordId}`, "_blank");
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
-
   const handleLogout = () => {
     authManager.logout();
-    window.location.reload();
+    window.location.href = "/";
   };
 
-  const currentAdmin = authManager.getAuthState().admin;
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  const authState = authManager.getAuthState();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-blue-900/20 dark:to-indigo-900/20">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/30 dark:from-slate-900 dark:via-blue-900/10 dark:to-indigo-900/10">
       {/* Header */}
-      <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/50 dark:border-slate-700/50 sticky top-0 z-50">
+      <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-lg border-b border-slate-200/50 dark:border-slate-700/50 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 flex items-center justify-center">
-                  <img 
-                    src={universityLogo} 
-                    alt="Tribhuvan University" 
-                    className="h-6 w-6 object-contain"
-                  />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-                    Tribhuvan University
-                  </h1>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">Administration Portal</p>
-                </div>
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-blue-700 shadow-lg flex items-center justify-center">
+                <img 
+                  src={universityLogo} 
+                  alt="University Logo" 
+                  className="h-8 w-8 object-contain"
+                />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-slate-900 dark:text-white">
+                  Admin Dashboard
+                </h1>
+                <p className="text-sm text-slate-600 dark:text-slate-400">
+                  Tribhuvan University Result Management
+                </p>
               </div>
             </div>
-            
             <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2 text-sm">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
-                  <User className="h-4 w-4 text-white" />
-                </div>
-                <div>
-                  <p className="font-medium text-slate-900 dark:text-slate-100">{currentAdmin?.name}</p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">{currentAdmin?.email}</p>
-                </div>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm"
+              <Badge className="bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400">
+                <Shield className="h-3 w-3 mr-1" />
+                {authState.admin?.name || "Administrator"}
+              </Badge>
+              <Button
+                variant="outline"
                 onClick={handleLogout}
                 className="bg-white/80 dark:bg-slate-800/80 hover:bg-red-50 dark:hover:bg-red-900/20 border-slate-200 dark:border-slate-700"
               >
@@ -184,16 +183,21 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm">
             <TabsTrigger value="overview" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm">
               <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Overview</span>
+              <span className="hidden sm:inline">Dashboard</span>
               <span className="sm:hidden">Stats</span>
             </TabsTrigger>
             <TabsTrigger value="upload" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm">
               <Upload className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden sm:inline">Upload Results</span>
               <span className="sm:hidden">Upload</span>
+            </TabsTrigger>
+            <TabsTrigger value="semesters" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm">
+              <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Semesters</span>
+              <span className="sm:hidden">Sem</span>
             </TabsTrigger>
             <TabsTrigger value="records" className="flex items-center justify-center space-x-1 sm:space-x-2 text-xs sm:text-sm">
               <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -213,277 +217,98 @@ export default function AdminDashboard() {
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Total Students</p>
-                      <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">{records.length}</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">Academic records</p>
-                    </div>
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
-                      <GraduationCap className="h-6 w-6 text-white" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">This Month</p>
-                      <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">
-                        {records.filter(r => new Date(r.uploadedAt).getMonth() === new Date().getMonth()).length}
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">New uploads</p>
-                    </div>
-                    <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-xl flex items-center justify-center">
-                      <Calendar className="h-6 w-6 text-white" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Passed</p>
-                      <p className="text-3xl font-bold text-green-600">
-                        {records.filter(r => r.result === "Passed").length}
-                      </p>
-                      <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">Students</p>
-                    </div>
-                    <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center">
-                      <Award className="h-6 w-6 text-white" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-slate-600 dark:text-slate-400">System</p>
-                      <p className="text-3xl font-bold text-indigo-600">Active</p>
-                      <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">OCR Processing</p>
-                    </div>
-                    <div className="w-12 h-12 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center">
-                      <Building2 className="h-6 w-6 text-white" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50">
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <BarChart3 className="h-5 w-5" />
-                  <span>System Overview</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">Recent Activity</h4>
-                    <div className="space-y-2">
-                      {records.slice(0, 5).map((record) => (
-                        <div key={record.id} className="flex items-center justify-between py-2 px-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center">
-                              <User className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{record.name}</p>
-                              <p className="text-xs text-slate-500 dark:text-slate-400">{record.tuRegd}</p>
-                            </div>
-                          </div>
-                          <Badge className={`${record.result === "Passed" ? "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400" : "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400"}`}>
-                            {record.result}
-                          </Badge>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-slate-900 dark:text-slate-100 mb-3">Quick Actions</h4>
-                    <div className="space-y-3">
-                      <Button 
-                        onClick={() => setActiveTab("upload")} 
-                        className="w-full justify-start bg-blue-600 hover:bg-blue-700 text-white"
-                      >
-                        <Upload className="h-4 w-4 mr-3" />
-                        Upload New Results
-                      </Button>
-                      <Button 
-                        onClick={() => setActiveTab("records")} 
-                        variant="outline" 
-                        className="w-full justify-start"
-                      >
-                        <FileText className="h-4 w-4 mr-3" />
-                        View All Records
-                      </Button>
-                      <Button 
-                        onClick={() => setActiveTab("admin")} 
-                        variant="outline" 
-                        className="w-full justify-start"
-                      >
-                        <Settings className="h-4 w-4 mr-3" />
-                        Admin Settings
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            <EnhancedAdminDashboard />
           </TabsContent>
 
           <TabsContent value="upload" className="space-y-6">
-            <div className="max-w-4xl mx-auto">
-              <FileUpload />
-            </div>
+            <FileUpload />
+          </TabsContent>
+
+          <TabsContent value="semesters" className="space-y-6">
+            <EnhancedSemesterManagement />
           </TabsContent>
 
           <TabsContent value="records" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-semibold text-slate-900 dark:text-white">Student Records</h2>
+                <p className="text-sm text-slate-600 dark:text-slate-400">Manage all student academic records</p>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Button 
+                  onClick={handleDeleteAllRecords}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                  disabled={deleteAllRecordsMutation.isPending}
+                >
+                  {deleteAllRecordsMutation.isPending ? (
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
+                  ) : (
+                    <Trash2 className="h-4 w-4 mr-2" />
+                  )}
+                  Delete All Records
+                </Button>
+              </div>
+            </div>
 
-            <Card className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-slate-200/50 dark:border-slate-700/50">
-              <CardHeader className="bg-gradient-to-r from-slate-50 to-blue-50 dark:from-slate-800 dark:to-blue-900/20 border-b border-slate-200/50 dark:border-slate-700/50">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
-                      <Database className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg text-slate-900 dark:text-slate-100">Student Records</CardTitle>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">Processed academic results</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-3">
-                    <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-400">
-                      {records.length} Total
-                    </Badge>
-                    {records.length > 0 && (
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={handleDeleteAllRecords}
-                        disabled={deleteAllRecordsMutation.isPending}
-                        className="bg-red-600 hover:bg-red-700 text-white"
-                      >
-                        {deleteAllRecordsMutation.isPending ? (
-                          <>
-                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2" />
-                            Deleting...
-                          </>
-                        ) : (
-                          <>
-                            <AlertTriangle className="h-4 w-4 mr-2" />
-                            Delete All
-                          </>
-                        )}
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </CardHeader>
-              
-              <CardContent className="p-0">
+            <Card className="professional-card">
+              <CardContent className="professional-card-content">
                 {isLoading ? (
-                  <div className="p-8 text-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                    <p className="text-slate-600 dark:text-slate-400">Loading records...</p>
+                  <div className="flex items-center justify-center p-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                   </div>
                 ) : records.length === 0 ? (
-                  <div className="p-12 text-center space-y-4">
-                    <div className="w-16 h-16 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center mx-auto">
-                      <FileText className="h-8 w-8 text-slate-400" />
-                    </div>
-                    <div>
-                      <p className="text-slate-900 dark:text-slate-100 font-semibold">No student records found</p>
-                      <p className="text-slate-600 dark:text-slate-400 text-sm">Upload some student images to get started</p>
-                    </div>
-                    <Button onClick={() => setActiveTab("upload")} className="bg-blue-600 hover:bg-blue-700 text-white">
+                  <div className="text-center py-12">
+                    <FileText className="h-16 w-16 mx-auto text-slate-400 mb-4" />
+                    <h3 className="text-lg font-semibold text-slate-900 dark:text-white mb-2">No records found</h3>
+                    <p className="text-slate-600 dark:text-slate-400 mb-4">Upload some student results to get started</p>
+                    <Button onClick={() => setActiveTab("upload")} className="btn-professional btn-primary">
                       <Upload className="h-4 w-4 mr-2" />
                       Upload Results
                     </Button>
                   </div>
                 ) : (
-                  <div className="overflow-x-auto">
+                  <div className="table-professional">
                     <table className="w-full">
-                      <thead className="bg-slate-50 dark:bg-slate-800/50">
+                      <thead>
                         <tr>
-                          <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
-                            <div className="flex items-center space-x-2">
-                              <User className="h-4 w-4" />
-                              <span>Student</span>
-                            </div>
-                          </th>
-                          <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
-                            <div className="flex items-center space-x-2">
-                              <Hash className="h-4 w-4" />
-                              <span>Registration</span>
-                            </div>
-                          </th>
-                          <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
-                            <div className="flex items-center space-x-2">
-                              <Award className="h-4 w-4" />
-                              <span>Result</span>
-                            </div>
-                          </th>
-                          <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
-                            <div className="flex items-center space-x-2">
-                              <Calendar className="h-4 w-4" />
-                              <span>Date</span>
-                            </div>
-                          </th>
-                          <th className="px-6 py-4 text-left text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
-                            Actions
-                          </th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">Student Name</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">T.U. Registration</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">Result</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">Upload Date</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">Actions</th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white dark:bg-slate-900/50 divide-y divide-slate-200 dark:divide-slate-700">
+                      <tbody>
                         {records.map((record) => (
-                          <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                            <td className="px-6 py-4 whitespace-nowrap">
+                          <tr key={record.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors duration-150">
+                            <td className="px-6 py-4 text-sm text-slate-900 dark:text-slate-100 border-b border-slate-200 dark:border-slate-700">
                               <div className="flex items-center space-x-3">
-                                <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center">
-                                  <User className="h-4 w-4 text-white" />
+                                <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center">
+                                  <User className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                                 </div>
-                                <div>
-                                  <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">{record.name}</div>
-                                  <div className="text-xs text-slate-500 dark:text-slate-400">ID: {record.id}</div>
-                                </div>
+                                <span className="font-medium">{record.name}</span>
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm font-mono text-slate-900 dark:text-slate-100 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
-                                {record.tuRegd}
-                              </div>
+                            <td className="px-6 py-4 text-sm text-slate-900 dark:text-slate-100 border-b border-slate-200 dark:border-slate-700">
+                              <span className="font-mono text-sm">{record.tuRegd}</span>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <Badge className={record.result === "Passed" 
-                                ? "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400" 
-                                : "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400"
-                              }>
+                            <td className="px-6 py-4 text-sm text-slate-900 dark:text-slate-100 border-b border-slate-200 dark:border-slate-700">
+                              <Badge className={`badge-professional ${
+                                record.result === "Passed" ? "badge-success" : "badge-danger"
+                              }`}>
                                 {record.result}
                               </Badge>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-slate-600 dark:text-slate-400">
-                                {formatDate(record.uploadedAt.toString())}
-                              </div>
+                            <td className="px-6 py-4 text-sm text-slate-900 dark:text-slate-100 border-b border-slate-200 dark:border-slate-700">
+                              <span className="text-sm">{formatDate(record.uploadedAt)}</span>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <td className="px-6 py-4 text-sm text-slate-900 dark:text-slate-100 border-b border-slate-200 dark:border-slate-700">
                               <div className="flex items-center space-x-2">
                                 <Button
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => handleViewRecord(record.id)}
-                                  className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                                  className="text-blue-600 hover:text-blue-700"
                                 >
                                   <Eye className="h-4 w-4" />
                                 </Button>
@@ -491,7 +316,7 @@ export default function AdminDashboard() {
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => handleDeleteRecord(record.id)}
-                                  className="text-red-600 hover:text-red-800 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                  className="text-red-600 hover:text-red-700"
                                   disabled={deleteRecordMutation.isPending}
                                 >
                                   <Trash2 className="h-4 w-4" />
