@@ -17,12 +17,32 @@
       "createdAt": "2025-07-15T10:50:36.545Z"
     }
   ],
-  "studentRecords": [],
+  "studentRecords": [
+    {
+      "id": 44,
+      "name": "Aaryan Rawat",
+      "tuRegd": "1-2-51-1-2022",
+      "result": "Failed",
+      "grade": "F",
+      "marks": null,
+      "totalMarks": null,
+      "subject": null,
+      "program": "B.Sc",
+      "faculty": null,
+      "semesterId": 2,
+      "imagePath": "C:\\Users\\NIC\\Downloads\\SRMS\\uploads\\studentImages-1752579466395-424753798.jpg",
+      "pdfPath": "C:\\Users\\NIC\\Downloads\\SRMS\\pdfs\\studentImages-1752579466395-424753798.pdf",
+      "originalFilename": "Ag. 4th sem 081 PAC_1_page_1.jpg",
+      "fileSize": 389225,
+      "uploadedBy": 1,
+      "createdAt": "2025-07-15T11:37:54.320Z"
+    }
+  ],
   "fileUploads": [],
   "nextIds": {
     "admin": 2,
     "semester": 3,
-    "studentRecord": 36,
+    "studentRecord": 45,
     "fileUpload": 1
   }
 }
