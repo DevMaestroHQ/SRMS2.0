@@ -31,6 +31,14 @@ Preferred communication style: Simple, everyday language.
 - **Enhanced user experience**: Better loading states, error handling, and user feedback
 - **System monitoring**: Health checks, uptime tracking, and performance metrics
 
+### Real-time Activity Tracking & System Health (Latest Update)
+- **WebSocket Integration**: Real-time communication between client and server
+- **Live Activity Feed**: Real-time tracking of all system activities (login, upload, search, admin actions)
+- **System Health Dashboard**: Live monitoring of memory usage, disk usage, uptime, and active connections
+- **Connection Status**: Visual indicators for WebSocket connection status
+- **Activity Categories**: Categorized tracking with success/warning/error status indicators
+- **Real-time Notifications**: Instant updates for system events and user actions
+
 ## System Architecture
 
 ### Frontend Architecture

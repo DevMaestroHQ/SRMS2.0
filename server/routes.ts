@@ -5,11 +5,13 @@ import path from "path";
 import fs from "fs";
 import sharp from "sharp";
 import { jsPDF } from "jspdf";
+import { WebSocketServer } from "ws";
 import { storage } from "./storage";
 import { AuthService } from "./services/auth";
 import { OCRService } from "./services/ocr";
 import { authenticateAdmin, type AuthenticatedRequest } from "./middleware/auth";
 import { loginSchema, studentSearchSchema, insertStudentRecordSchema, changePasswordSchema, insertSemesterSchema, updateProfileSchema } from "@shared/schema";
+import { activityTracker } from "./services/activity-tracker";
 
 // Configure multer for file uploads
 const uploadsDir = path.join(process.cwd(), "uploads");
@@ -120,6 +122,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const token = AuthService.generateToken(admin);
+      
+      // Log login activity
+      activityTracker.logActivity({
+        type: 'login',
+        description: `Admin ${admin.name} logged in`,
+        status: 'success',
+        user: admin.name
+      });
       
       res.json({
         token,
@@ -595,6 +605,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Activity tracker endpoints
+  app.get("/api/admin/activities", authenticateAdmin, async (req: AuthenticatedRequest, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 50;
+      const activities = activityTracker.getRecentActivities(limit);
+      res.json(activities);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch activities" });
+    }
+  });
+
+  app.get("/api/admin/system-health", authenticateAdmin, async (req: AuthenticatedRequest, res) => {
+    try {
+      const health = activityTracker.getSystemHealth();
+      res.json(health);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch system health" });
+    }
+  });
+
   const httpServer = createServer(app);
+  
+  // Set up WebSocket server for real-time activity tracking on a different port
+  const wss = new WebSocketServer({ port: 5001 });
+  
+  wss.on('connection', (ws) => {
+    console.log('New WebSocket connection established on port 5001');
+    activityTracker.addClient(ws);
+    
+    // Log connection activity
+    activityTracker.logActivity({
+      type: 'system',
+      description: 'Admin connected to real-time monitoring',
+      status: 'success'
+    });
+  });
+  
   return httpServer;
 }

@@ -37,6 +37,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { authManager } from "@/lib/auth";
 import { type Semester, type Admin } from "@shared/schema";
+import RealTimeActivityTracker from "@/components/real-time-activity-tracker";
 
 interface DashboardStats {
   totalSemesters: number;
@@ -424,78 +425,10 @@ export default function EnhancedAdminDashboard() {
         </CardContent>
       </Card>
 
-      {/* Recent Activity */}
-      <Card className="professional-card">
-        <CardHeader className="professional-card-header">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-lg font-semibold flex items-center">
-              <Activity className="h-5 w-5 mr-2" />
-              Recent Activity
-            </CardTitle>
-            <div className="flex items-center space-x-2">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
-                <Input
-                  placeholder="Search activity..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10 w-64 input-professional"
-                />
-              </div>
-              <Select value={activityFilter} onValueChange={setActivityFilter}>
-                <SelectTrigger className="w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="upload">Uploads</SelectItem>
-                  <SelectItem value="search">Searches</SelectItem>
-                  <SelectItem value="admin_action">Admin Actions</SelectItem>
-                  <SelectItem value="system">System</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="professional-card-content">
-          <div className="space-y-3">
-            {filteredActivity.map((item) => (
-              <div
-                key={item.id}
-                className={`flex items-start space-x-3 p-3 rounded-lg border-l-4 ${getStatusColor(item.status)} bg-slate-50 dark:bg-slate-800/50`}
-              >
-                <div className="flex-shrink-0 p-2 bg-white dark:bg-slate-700 rounded-lg">
-                  {getActivityIcon(item.type)}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-slate-900 dark:text-white">
-                      {item.description}
-                    </p>
-                    <div className="flex items-center space-x-2">
-                      {getStatusIcon(item.status)}
-                      <span className="text-xs text-slate-500 dark:text-slate-400">
-                        {formatTimeAgo(item.timestamp)}
-                      </span>
-                    </div>
-                  </div>
-                  {item.user && (
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                      by {item.user}
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-            <Button variant="outline" className="w-full btn-professional btn-secondary">
-              <Eye className="h-4 w-4 mr-2" />
-              View All Activity
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Real-time Activity Tracker */}
+      <div className="col-span-full">
+        <RealTimeActivityTracker />
+      </div>
     </div>
   );
 }

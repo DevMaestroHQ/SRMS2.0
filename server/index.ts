@@ -1,6 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { activityTracker } from "./services/activity-tracker";
 
 const app = express();
 app.use(express.json());
@@ -30,6 +31,14 @@ app.use((req, res, next) => {
       }
 
       log(logLine);
+      
+      // Track API activity
+      activityTracker.logActivity({
+        type: 'admin_action',
+        description: `${req.method} ${path} (${res.statusCode})`,
+        status: res.statusCode < 400 ? 'success' : 'error',
+        metadata: { method: req.method, path, statusCode: res.statusCode, duration }
+      });
     }
   });
 
