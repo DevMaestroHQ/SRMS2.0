@@ -21,7 +21,7 @@ export default function Footer() {
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
-                  Tribhuvan University
+                  IAAS, Paklihawa
                 </h3>
                 <p className="text-sm text-slate-600 dark:text-slate-400">
                   Result Management System
@@ -42,11 +42,11 @@ export default function Footer() {
             <div className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4 text-blue-600" />
-                <span>Kirtipur, Kathmandu, Nepal</span>
+                <span>IAAS, Paklihawa</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4 text-blue-600" />
-                <span>+977-1-4330433</span>
+                <span>+977 9812960176</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4 text-blue-600" />
@@ -54,7 +54,7 @@ export default function Footer() {
               </div>
               <div className="flex items-center space-x-2">
                 <Globe className="h-4 w-4 text-blue-600" />
-                <span>www.tu.edu.np</span>
+                <span>www.tu-iaas.onrender.com</span>
               </div>
             </div>
           </div>
@@ -85,7 +85,7 @@ export default function Footer() {
         <div className="border-t border-slate-200/50 dark:border-slate-700/50 mt-8 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="text-sm text-slate-600 dark:text-slate-400">
-              © 2025 Tribhuvan University. All rights reserved.
+              © 2025 Ram Kishan Kurmi. All rights reserved.
             </div>
             <div className="flex items-center space-x-6 text-sm text-slate-600 dark:text-slate-400">
               <span className="flex items-center space-x-2">
