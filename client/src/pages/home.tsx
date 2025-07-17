@@ -72,7 +72,7 @@ export default function Home() {
                 
                 <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
                   <span className="bg-gradient-to-r from-primary via-educational-purple to-educational-green bg-clip-text text-transparent">
-                    Tribhuvan University
+                    IAAS, Paklihawa
                   </span>
                   <span className="block text-3xl md:text-4xl lg:text-5xl mt-3 text-foreground/90">
                     Result Management System
