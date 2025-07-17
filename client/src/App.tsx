@@ -60,7 +60,7 @@ function Router() {
                 </div>
               </div>
               <h1 className="md:text-4xl font-bold text-slate-900 dark:text-white mb-4 text-[40px]">
-                Tribhuvan University
+                IAAS, Paklihawa
               </h1>
               <p className="text-lg text-slate-600 dark:text-slate-400 mb-2">
                 Student Result Management System
