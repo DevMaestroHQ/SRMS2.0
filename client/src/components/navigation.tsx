@@ -49,7 +49,7 @@ export default function Navigation({ currentView, onViewChange }: NavigationProp
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-                  Tribhuvan University
+                  IAAS, Paklihawa
                 </h1>
                 <p className="text-sm text-slate-600 dark:text-slate-400 -mt-1 flex items-center">
                   <BookOpen className="h-3 w-3 mr-1" />
