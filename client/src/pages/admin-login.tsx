@@ -72,10 +72,10 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
             </div>
             <div className="space-y-2">
               <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-                Admin Portal
+                IAAS,Paklihawa
               </h1>
               <p className="text-slate-600 dark:text-slate-400">
-                Tribhuvan University Result Management System
+                Result Management System
               </p>
             </div>
           </CardHeader>
